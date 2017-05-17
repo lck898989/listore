@@ -7,20 +7,266 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>listore Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  <properties>
+             <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+             <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+             <maven.compiler.Encoding>UTF-8</maven.compiler.Encoding>
+             <encoding></encoding>
+             <spring-version>4.3.7.RELEASE</spring-version>
+             <mybatis-version>3.4.1</mybatis-version>
+  </properties>
   <dependencies>
     <dependency>
 		      <groupId>junit</groupId>
 		      <artifactId>junit</artifactId>
-		      <version>3.8.1</version>
+		      <version>4.12</version>
 		      <scope>test</scope>
     </dependency>
+    <!-- 配置spring依赖 start -->
+    <dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-context</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-core</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-beans</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-web</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-webmvc</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-test</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-aop</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-orm</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-jdbc</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-tx</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-context-support</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-aspects</artifactId>
+			    <version>4.3.7.RELEASE</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.aspectj</groupId>
+			    <artifactId>aspectjrt</artifactId>
+			    <version>1.8.10</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.codehaus.jackson</groupId>
+			    <artifactId>jackson-core-asl</artifactId>
+			    <version>1.9.13</version>
+	</dependency>
+    <!-- 配置spring依赖 end -->
+    <!-- 配置数据库依赖 -->
+    <dependency>
+			    <groupId>mysql</groupId>
+			    <artifactId>mysql-connector-java</artifactId>
+			    <version>5.1.38</version>
+	</dependency>
+    <dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-dbcp2</artifactId>
+			    <version>2.1.1</version>
+	</dependency>
+	<!-- 日志配置 -->
+	<dependency>
+			    <groupId>ch.qos.logback</groupId>
+			    <artifactId>logback-classic</artifactId>
+			    <version>1.2.3</version>
+	</dependency>
+	<dependency>
+			    <groupId>ch.qos.logback</groupId>
+			    <artifactId>logback-core</artifactId>
+			    <version>1.2.3</version>
+	</dependency>
+	
+	<dependency>
+			    <groupId>com.google.guava</groupId>
+			    <artifactId>guava</artifactId>
+			    <version>21.0</version>
+	</dependency>
+	
+	<dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-lang3</artifactId>
+			    <version>3.4</version>
+	</dependency>
+	
+	<dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-collections4</artifactId>
+			    <version>4.1</version>
+	</dependency>
+	<dependency>
+			    <groupId>joda-time</groupId>
+			    <artifactId>joda-time</artifactId>
+			    <version>2.9.9</version>
+	</dependency>
+	<!-- id 加密解密的jar包 -->
+	<dependency>
+			    <groupId>org.hashids</groupId>
+			    <artifactId>hashids</artifactId>
+			    <version>1.0.1</version>
+	</dependency>
+	<!-- ftp服务器客户端用到的jar包 -->
+	<dependency>
+			    <groupId>commons-net</groupId>
+			    <artifactId>commons-net</artifactId>
+			    <version>3.6</version>
+	</dependency>
+	<!-- 文件上传 -->
+	<dependency>
+			    <groupId>commons-fileupload</groupId>
+			    <artifactId>commons-fileupload</artifactId>
+			    <version>1.3.2</version>
+	</dependency>
+	<dependency>
+			    <groupId>commons-io</groupId>
+			    <artifactId>commons-io</artifactId>
+			    <version>2.5</version>
+	</dependency>	
+	
+	
+    <!-- mybatis依赖  start-->
+    <dependency>
+			    <groupId>org.mybatis</groupId>
+			    <artifactId>mybatis</artifactId>
+			    <version>${mybatis-version}</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.mybatis.generator</groupId>
+			    <artifactId>mybatis-generator-core</artifactId>
+			    <version>1.3.5</version>
+	</dependency>
+	<!-- mybatis依赖 end -->
+    <!-- 配置mybatis和spring整合所需要的jar包 -->
+    <dependency>
+			    <groupId>org.mybatis</groupId>
+			    <artifactId>mybatis-spring</artifactId>
+			    <version>1.3.0</version>
+	</dependency>
+	<!-- mybatis page helper 分页助手 -->
+	<dependency>
+			    <groupId>com.github.pagehelper</groupId>
+			    <artifactId>pagehelper</artifactId>
+			    <version>5.0.0</version>
+	</dependency>
+	<dependency>
+			    <groupId>com.github.miemiedev</groupId>
+			    <artifactId>mybatis-callable</artifactId>
+			    <version>1.0</version>
+	</dependency>
+    <!-- 支付宝依赖库 -->
+    <dependency>
+			    <groupId>commons-codec</groupId>
+			    <artifactId>commons-codec</artifactId>
+			    <version>1.10</version>
+	</dependency>	
+	<dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-configuration2</artifactId>
+			    <version>2.1.1</version>
+	</dependency>
+	<dependency>
+			    <groupId>commons-lang</groupId>
+			    <artifactId>commons-lang</artifactId>
+			    <version>2.6</version>
+	</dependency>
+	<dependency>
+			    <groupId>commons-logging</groupId>
+			    <artifactId>commons-logging</artifactId>
+			    <version>1.2</version>
+	</dependency>
+	<dependency>
+			    <groupId>com.google.zxing</groupId>
+			    <artifactId>core</artifactId>
+			    <version>3.3.0</version>
+	</dependency>
+	<dependency>
+			    <groupId>com.google.code.gson</groupId>
+			    <artifactId>gson</artifactId>
+			    <version>2.8.0</version>
+	</dependency>
+	<dependency>
+			    <groupId>org.hamcrest</groupId>
+			    <artifactId>hamcrest-core</artifactId>
+			    <version>1.3</version>
+	</dependency>
+	
+	
     <dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>javax.servlet-api</artifactId>
 		    <version>3.1.0</version>
     </dependency>
+    <dependency>
+		    <groupId>redis.clients</groupId>
+		    <artifactId>jedis</artifactId>
+		    <version>2.9.0</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>listore</finalName>
+	    <plugins>
+	         <plugin>
+	             <groupId>org.mybatis.generator</groupId>
+			     <artifactId>mybatis-generator-maven-plugin</artifactId>
+			     <version>1.3.5</version>
+			     <configuration>
+			          <verbose>true</verbose>
+			          <overwrite>true</overwrite>
+			     </configuration>
+	         </plugin> 
+	         <plugin>
+	                <groupId>org.apache.maven.plugins</groupId>
+				    <artifactId>maven-compiler-plugin</artifactId>
+				    <version>3.5.1</version>
+				    <configuration>
+				           <source>1.8</source>
+				           <target>1.8</target>
+				           <encoding>UTF-8</encoding>
+				           <compilerArguments>
+				               <extdirs>${project.basedir}/src/main/webapp/WEB-INF/lib</extdirs>
+				           </compilerArguments>
+				    </configuration>
+	         </plugin>
+	    </plugins>
   </build>
 </project>
