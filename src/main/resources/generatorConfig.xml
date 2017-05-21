@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 数据库连接的一些常量 -->
+    <properties resource="db.properties"/>
+    <!--数据库驱动的jar地址 -->
+    <classPathEntry location="${classpath}"/>
+    
+    <context id="default" targetRuntime="MyBatis3">
+		    <!-- 创建class时对注释进行控制 -->
+			<commentGenerator>
+			       <!-- 是否生成注释时间戳 -->
+			       <property name="suppressDate" value="true"/>
+			       <property name="suppressAllComments" value="false"/>
+			</commentGenerator>
+			<jdbcConnection driverClass="${jdbc.driverClassName}"
+		        connectionURL="${jdbc.url}"
+		        userId="${jdbc.username}"
+		        password="${jdbc.password}">
+		    </jdbcConnection>
+		    <!-- 类型转换 -->
+		    <javaTypeResolver >
+		      <!-- 是否使用bigDecimal,false可以自动转化以下类型long,Integer,short,etc -->
+		      <property name="forceBigDecimals" value="false" />
+		    </javaTypeResolver>
+		    
+		    <!-- 生成实体类的地址 -->
+		    <javaModelGenerator targetPackage="com.listore.pojo" targetProject="./src/main/java">
+		      <!-- 是否在当前路径下新加一层schema,eg:fase路径 -->
+		      <property name="enableSubPackages" value="true" />
+		      <property name="trimStrings" value="true" />
+		    </javaModelGenerator>
+		    <!-- 生成map.xml文件 -->
+		    <sqlMapGenerator targetPackage="mappers"  targetProject="./src/main/resources">
+		      <property name="enableSubPackages" value="true" />
+		    </sqlMapGenerator>
+		    <!-- 生成DAO层文件的代码 -->
+		    <javaClientGenerator type="XMLMAPPER" targetPackage="com.listore.dao"  targetProject="./src/main/java">
+		      <property name="enableSubPackages" value="true" />
+		    </javaClientGenerator>
+		
+		    <!-- <table schema="DB2ADMIN" tableName="ALLTYPES" domainObjectName="Customer" >
+		      <property name="useActualColumnNames" value="true"/>
+		      <generatedKey column="ID" sqlStatement="DB2" identity="true" />
+		      <columnOverride column="DATE_FIELD" property="startDate" />
+		      <ignoreColumn column="FRED" />
+		      <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" />
+		    </table> -->
+		    <!-- 用户表 -->
+		    <table tableName="listore_user" alias="user" domainObjectName="User"
+		           enableCountByExample="false" 
+		           enableDeleteByExample="false"
+		           enableSelectByExample="false">
+		           
+		     </table>
+		     <!-- 购物车表 -->
+		     <table tableName="listore_cart" alias="cart" domainObjectName="Cart"
+		           enableUpdateByExample="false"
+		     	   enableCountByExample="false"
+		     	   enableDeleteByExample="false"
+		     	   enableSelectByExample="false"
+		     	  ></table>
+		     <!-- 产品种类表 -->
+		     <table tableName="listore_category" alias="category" domainObjectName="Category"
+		     		enableUpdateByExample="false"
+		     		 enableCountByExample="false" 
+		           enableDeleteByExample="false"
+		           enableSelectByExample="false"></table>
+		     <!-- 产品表 -->
+		     <table tableName="listore_product" alias="product" domainObjectName="Product"
+		     		 enableCountByExample="false" 
+		     		 enableUpdateByExample="false"
+		           enableDeleteByExample="false"
+		           enableSelectByExample="false">
+		                 <columnOverride column="detail" jdbcType="VARCHAR"/>
+		                 <columnOverride column="sub_images" jdbcType="VARCHAR"/>
+		     </table>
+		     <!-- 订单表 -->
+		     <table tableName="listore_order" alias="order" domainObjectName="Order"
+		     		 enableCountByExample="false" 
+		           enableDeleteByExample="false"
+		           enableUpdateByExample="false"
+		           enableSelectByExample="false"></table>
+		     <!-- 订单明细表 -->
+		     <table tableName="listore_order_item" alias="orderItem" domainObjectName="OrderItem"
+		     		enableCountByExample="false" 
+		           enableDeleteByExample="false"
+		           enableUpdateByExample="false"
+		           enableSelectByExample="false"></table>
+		     <!-- 收货地址表 -->
+		     <table tableName="listore_shipping" alias="shipping" domainObjectName="Shipping"
+		     		enableCountByExample="false" 
+		           enableDeleteByExample="false"
+		           enableUpdateByExample="false"
+		           enableSelectByExample="false"></table>
+		     <!-- 付款信息表 -->
+		     <table tableName="listore_pay_info" alias="payInfo" domainObjectName="PayInfo"
+		     		enableCountByExample="false" 
+		           enableDeleteByExample="false"
+		           enableUpdateByExample="false"
+		           enableSelectByExample="false"></table>
+
+  </context>
+</generatorConfiguration>
