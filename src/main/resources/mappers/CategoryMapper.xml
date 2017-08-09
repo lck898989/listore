@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.listore.dao.CategoryMapper">
+  
   <resultMap id="BaseResultMap" type="com.listore.pojo.Category">
     <!--
       WARNING - @mbg.generated
@@ -23,6 +24,18 @@
     category.status as category_status, category.sort_order as category_sort_order, category.create_time as category_create_time, 
     category.update_time as category_update_time
   </sql>
+  <!-- 检查品类的名字是否存在 -->
+  <select id="checkName" parameterType="string" resultType="int">
+    select count(1) from listore_category where name =#{name,jdbcType=VARCHAR};
+  </select>
+  <!-- 通过类别名获取品类的信息-->
+  <select id="selectByName" parameterType="string" resultType ="com.listore.pojo.Category">
+      select * from listore_category where name = #{name,jdbcType=VARCHAR};
+  </select>
+  <!-- 通过pid获得子节点 -->
+  <select id="selectCategoriesByPid" parameterType="int" resultMap="">
+  
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
