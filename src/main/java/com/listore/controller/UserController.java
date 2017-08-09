@@ -130,7 +130,7 @@ public class UserController {
 	     
 		  return response;
 	}
-	//��ȡ��¼�û���Ϣ
+	//获得登录用户的信息
 	@RequestMapping(value="/get_User_Info",method=RequestMethod.POST)
 	@ResponseBody
 	public ServerResponse<User> get_User_Info(HttpSession session){
