@@ -68,4 +68,20 @@ public interface UserMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(User record);
+    //检查用户名是否存在
+	int checkUsername(String username);
+	//登录时校验
+	User selectLogin(@Param("username")String username,@Param("password")String password);
+    //检查邮箱
+	int checkEmail(String email);
+
+	String selectQuestionByUser(String username);
+
+	int  checkAnswer(@Param("username")String username,@Param("question")String question, @Param("answer")String answer);
+
+	int updatePasswordByUsername(@Param("username")String username,@Param("passwordNew")String passwordNew);
+
+	int checkPassword(@Param("password")String password, @Param("userId")Integer userId);
+
+	int checkEmailByUserId(@Param("email")String email, @Param("userId")Integer userId);
 }

@@ -20,21 +20,31 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         <context:component-scan base-package="com.listore.dao"/>
         <context:component-scan base-package="com.listore.pojo"/>
-        <context:component-scan base-package="con.listore.service"/>
+        <context:component-scan base-package="com.listore.service"/>
+       
+        <context:component-scan base-package="com.listore.service.impl"/>
+        <context:component-scan base-package="com.listore.controller"/>
+        <context:component-scan base-package="com.listore.controller.backStage"/>
         <context:component-scan base-package="com.listore.vo"/>
+        <mvc:annotation-driven/>
         <context:annotation-config/>
         <context:property-placeholder location="classpath:db.properties"/>
         <!-- dataSources -->
-        <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource.class">
+        <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
                 <property name="driverClassName" value="${jdbc.driverClassName}"/>
                 <property name="url" value="${jdbc.url}"/>
                 <property name="username" value="${jdbc.username}"/>
                 <property name="password" value="${jdbc.password}"/>
+                <!-- 连接池启动时的初始值 -->
                 <property name="initialSize" value="${db.initialSize}"/>
-                <property name="maxActive" value="${db.maxActive}"/>
+               
+                <!-- 最大空闲值，当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放 -->
                 <property name="maxIdle" value="${db.maxIdle}"/>
+                <!-- 最小空闲值，当空闲的连接少于阙值的时候，连接池就会预申请一些连接，以免洪峰来时来不及申请 -->
                 <property name="minIdle" value="${db.minIdle}"/>
-                <property name="maxWait" value="${db.maxWait}"/>
+                <!-- 最大连接等待时间，如果超过此时间将接到连接异常，设为-1表示没有该限制 -->
+                <property name="maxWaitMillis" value="${db.maxWait}"/>
+                <!-- 给出一条简单的sql语句进行验证 -->
                 <property name="defaultAutoCommit" value="${db.defaultAutoCommit}"/>
                 <property name="minEvictableIdleTimeMillis" value="${db.minEvictableIdleTimeMillis}"/>
         </bean>
@@ -54,7 +64,8 @@
         		</property>
         </bean>
         <bean name="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        		<property name="basePackage" value="com.listore.dao"></property>
+        		<property name="basePackage" value="com.listore.dao"/>
+        		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         </bean>
         <tx:annotation-driven transaction-manager="txManager"/>
         <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
