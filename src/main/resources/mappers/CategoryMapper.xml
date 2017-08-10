@@ -68,7 +68,7 @@
       #{status,jdbcType=BIT}, #{sortOrder,jdbcType=INTEGER}, now(), 
       now())
   </insert>
-  <select id="check_add_Category" parameterType="com.listore.pojo.Category" resultType="String">
+  <select id="check_add_Category" parameterType="String" resultType="int">
      select count(1) from listore_category where name= #{name};
   </select>
   <insert id="insertSelective" parameterType="com.listore.pojo.Category">

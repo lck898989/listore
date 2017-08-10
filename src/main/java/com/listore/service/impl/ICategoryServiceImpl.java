@@ -53,7 +53,7 @@ public class ICategoryServiceImpl implements ICategoryService{
 	@Override
 	public ServerResponse<String> addCategory(Category c) {
 		// TODO Auto-generated method stub
-		if(c.getName() != null){
+		if(null != c.getName() || "" != c.getName()){
 			//用户名在数据库只不存在的话说明可以插入该条记录
 			if(categoryMapper.check_add_Category(c.getName()) == 0){
 				int insertCount = categoryMapper.insertSelective(c);
