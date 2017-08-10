@@ -42,6 +42,10 @@ public interface CategoryMapper {
      *
      * @mbg.generated
      */
+    /*
+     * 检查插入的Category对象是否在数据库中已经存在
+     * */
+    int check_add_Category(String name);
     int insertSelective(Category record);
 
     /**

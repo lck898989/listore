@@ -53,11 +53,18 @@ public class ICategoryServiceImpl implements ICategoryService{
 	@Override
 	public ServerResponse<String> addCategory(Category c) {
 		// TODO Auto-generated method stub
-		int insertCount = categoryMapper.insertSelective(c);
-		if(insertCount > 0){
-			return ServerResponse.createBySuccess("添加成功");
+		if(c.getName() != null){
+			//用户名在数据库只不存在的话说明可以插入该条记录
+			if(categoryMapper.check_add_Category(c.getName()) == 0){
+				int insertCount = categoryMapper.insertSelective(c);
+				if(insertCount > 0){
+					return ServerResponse.createBySuccess("添加成功");
+				}
+				return ServerResponse.createByErrorMessage("插入数据时候出错");
+			}
+			return ServerResponse.createByErrorMessage("该品类已经存在");
 		}
-		return ServerResponse.createByErrorMessage("添加品类失败");
+		return ServerResponse.createByErrorMessage("品类名为空");
 	}
 
 }
