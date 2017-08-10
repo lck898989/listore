@@ -16,5 +16,5 @@ public interface ICategoryService {
           //获取品类子节点（评级）
 	     ServerResponse<List<Category>> getCategory(String name);
 	     //增加节点
-	     boolean addCategory();
+		ServerResponse<String> addCategory(Category c);
 }

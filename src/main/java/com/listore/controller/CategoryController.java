@@ -27,5 +27,11 @@ public class CategoryController {
 	   public ServerResponse<List<Category>> getCategories(String name){
 		  return categoryServiceImpl.getCategory(name);
 	   }
+	   //增加品类
+	   @RequestMapping("/add_category")
+	   @ResponseBody
+	  public ServerResponse<String> addCategory(Category c){
+		   return categoryServiceImpl.addCategory(c);
+	   }
 	   
 }

@@ -1,10 +1,12 @@
 package com.listore.service.impl;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
 import com.listore.commen.ServerResponse;
@@ -30,8 +32,13 @@ public class ICategoryServiceImpl implements ICategoryService{
 		Category c = categoryMapper.selectByName(name);
 		//获得该品类的id号
 		int categoryId = c.getId();
+		System.out.println("in service categoryId is " + categoryId);
 		//凡是表中pid == id 的记录都是该节点的子节点
 		categories = categoryMapper.selectCategoriesByPid(categoryId);
+	    Method m = SqlSession.class.getMethods()[0];
+	    System.out.println("m is " + m);
+	    Field[] f = SqlSession.class.getDeclaredFields();
+	    System.out.println(f);
 		if(categories != null){
 			categories.getStatus();
 			categories.getMsg();
@@ -44,9 +51,13 @@ public class ICategoryServiceImpl implements ICategoryService{
 	}
 
 	@Override
-	public boolean addCategory() {
+	public ServerResponse<String> addCategory(Category c) {
 		// TODO Auto-generated method stub
-		return false;
+		int insertCount = categoryMapper.insertSelective(c);
+		if(insertCount > 0){
+			return ServerResponse.createBySuccess("添加成功");
+		}
+		return ServerResponse.createByErrorMessage("添加品类失败");
 	}
 
 }
