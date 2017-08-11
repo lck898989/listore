@@ -19,4 +19,5 @@ public interface IUserService {
 		public ServerResponse<String> resetPassword(String passwordOld,String passwordNew,User user);
 		public ServerResponse<User> update_userInfo(User newUser);
 		public ServerResponse<User> getUserInfo(int userId);
+		public ServerResponse<String> check_admin_role(User user);
 }

@@ -208,4 +208,17 @@ public class IUserServiceImpl implements IUserService{
 		ServerResponse<User> response = ServerResponse.createBySuccess(user);
 		return response;
 	}
+	public ServerResponse<String> check_admin_role(User user){
+		 if(user == null){
+			 
+			 return ServerResponse.createByErrorMessage("用户为空");
+		 }else{
+			  System.out.println("role is " + user.getRole());
+			  if(user.getRole().equals(Const.Role.ROLE_ADMIN)){
+				  return ServerResponse.createBySuccessMsg("管理员登录成功");
+			  }
+			  return ServerResponse.createByErrorMessage("请以管理员身份登录");
+		 }
+		 
+	}
 }

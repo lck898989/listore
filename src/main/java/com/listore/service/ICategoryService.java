@@ -17,4 +17,6 @@ public interface ICategoryService {
 	     ServerResponse<List<Category>> getCategory(String name);
 	     //增加节点
 		ServerResponse<String> addCategory(Category c);
+		//更新品类信息
+		ServerResponse<String> updateCategory(Category c);
 }
