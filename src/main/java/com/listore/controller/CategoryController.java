@@ -26,6 +26,7 @@ import com.listore.service.IUserService;
 public class CategoryController {
 	   @Resource(name="iUserService")
 	   private IUserService iUserService;
+	   
 	   @Resource(name="categoryServiceImpl")
        private ICategoryService categoryServiceImpl;
 	   //获取品类的子节点
@@ -53,6 +54,8 @@ public class CategoryController {
 		   
 	   }
 	   //更新产品类名字
+	   @RequestMapping("/update_category")
+	   @ResponseBody
 	   public ServerResponse<String> updateCategory(HttpSession session,Category c){
 		    User u = (User)session.getAttribute(Const.CURRENT_USER);
 		    if(u == null){
