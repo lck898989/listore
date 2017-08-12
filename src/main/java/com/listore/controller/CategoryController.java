@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.listore.commen.Const;
 import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
+import com.listore.dao.CategoryMapper;
 import com.listore.pojo.Category;
 import com.listore.pojo.User;
 import com.listore.service.ICategoryService;
@@ -32,8 +33,21 @@ public class CategoryController {
 	   //获取品类的子节点
 	   @RequestMapping("/get_category")
 	   @ResponseBody
-	   public ServerResponse<List<Category>> getCategories(String name){
-		  return categoryServiceImpl.getCategory(name);
+	   public ServerResponse<List<Category>> getCategories(HttpSession session,String name){
+		   //通过session中的对象获得当前登录的对象
+		   User user = (User)session.getAttribute(Const.CURRENT_USER);
+		   if(user == null){
+			   return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录请登录");
+		   }
+		   //检查是否为管理员登录如果不是管理员登录的话阻止其进行操作
+		   if(iUserService.check_admin_role(user).isSuccess()){
+			   //说明为管理员登录
+			   return categoryServiceImpl.getCategory(name);
+		   }else{
+			   return ServerResponse.createByErrorMessage("请以管理员身份登录");
+		   }
+		   
+		  
 	   }
 	   //增加品类
 	   @RequestMapping("/add_category")
@@ -64,6 +78,20 @@ public class CategoryController {
 		    if(iUserService.check_admin_role(u).isSuccess() && c != null){
 				   //如果是admin的话进行品类的添加
 				   return categoryServiceImpl.updateCategory(c);
+			   }else{
+				   return ServerResponse.createByErrorMessage("请以管理员的身份登录");
+			   }
+	   }
+	   @RequestMapping("/get_category_tree")
+	   @ResponseBody
+	   public ServerResponse<String> updateCategory(HttpSession session,int categoryId){
+		    User u = (User)session.getAttribute(Const.CURRENT_USER);
+		    if(u == null){
+		    	return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录请登录！");
+		    }
+		    if(iUserService.check_admin_role(u).isSuccess()){
+				   //如果是admin的话进行品类的添加
+				   return categoryServiceImpl.getThisCategoryChildCategories(categoryId);
 			   }else{
 				   return ServerResponse.createByErrorMessage("请以管理员的身份登录");
 			   }

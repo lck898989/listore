@@ -1,33 +1,38 @@
 package com.listore.service.impl;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
-import com.listore.commen.Const;
-import com.listore.commen.ResponseCode;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.listore.commen.ServerResponse;
 import com.listore.dao.CategoryMapper;
 import com.listore.pojo.Category;
-import com.listore.pojo.User;
 import com.listore.service.ICategoryService;
-
+/*
+ * 控制层
+ *  |
+ *  |
+ * 服务层
+ *  |
+ *  |
+ * 数据访问层
+ * 
+ * */
 @Service(value="categoryServiceImpl")
 public class ICategoryServiceImpl implements ICategoryService{
-	//访问数据层的对象
+	//创建数据访问层的对象
 	@Resource
 	private CategoryMapper categoryMapper;
 	@Override
 	public ServerResponse<List<Category>> getCategory(String name) {
 		// TODO Auto-generated method stub
-		ServerResponse<List<Category>> categories = null;
+		List<Category> categories = null;
 		//检查类别名是否存在
 		int nameCount = categoryMapper.checkName(name);
 		if(nameCount == 0){
@@ -40,21 +45,15 @@ public class ICategoryServiceImpl implements ICategoryService{
 		System.out.println("in service categoryId is " + categoryId);
 		//凡是表中pid == id 的记录都是该节点的子节点
 		categories = categoryMapper.selectCategoriesByPid(categoryId);
-	    Method m = SqlSession.class.getMethods()[0];
-	    System.out.println("m is " + m);
-	    Field[] f = SqlSession.class.getDeclaredFields();
-	    System.out.println(f);
 		if(categories != null){
-			categories.getStatus();
-			categories.getMsg();
-			categories.getData();
-			return  categories;	
+			 //将装有category的对象装入ServerResponse中
+			return  ServerResponse.createBySuccess("got them",categories);	
 		}else{
-			return ServerResponse.createBySuccess("提取子品类失败",null);
+			return ServerResponse.createByErrorMessage("提取平级子类别失败");
 		}
 		
 	}
-
+    //添加产品信息
 	@Override
 	public ServerResponse<String> addCategory(Category c) {
 		// TODO Auto-generated method stub
@@ -89,5 +88,36 @@ public class ICategoryServiceImpl implements ICategoryService{
 			  }
 		  }
 	}
-
+   //获得该节点的所有子节点
+	public ServerResponse getThisCategoryChildCategories(int categoryId){
+		 Set<Category> categorySet = Sets.newHashSet();
+		 //这时候categroySet已经被填充完毕了
+		 if(categorySet != null){
+			 List<Integer> categoryIdList = Lists.newArrayList();
+			 for(Category c : categorySet){
+				 categoryIdList.add(c.getId());
+			 }
+			 return ServerResponse.createBySuccess(categoryIdList);
+		 }
+		 return ServerResponse.createByErrorMessage("提取失败");
+		 
+	}
+	//递归查找该节点的全部子节点
+	private Set<Category> findDeepCategoryById(Set<Category> categorySet,int categoryId){
+		 //依据id从数据库中获得相应的对象
+		 Category c = categoryMapper.selectByPrimaryKey(categoryId);
+		 if(c != null){
+			 //将该类别加入到类别集合中
+			 categorySet.add(c);
+		 }
+		 //接下来创建一个category集合 用来装配 该ID的子节点
+		 List<Category> categoryList = categoryMapper.selectCategoriesByPid(categoryId);
+		 //遍历该节点结合中的元素看该节点下是否有孩子节点
+		 for(Category categoryItem : categoryList){
+			 //继续查找该节点是否有孩子节点进行递归调用
+			 findDeepCategoryById(categorySet,categoryItem.getId());
+		 }
+		 return categorySet;
+		 
+	}
 }
