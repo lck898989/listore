@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -32,7 +33,7 @@ public class CategoryController {
 	   @Resource(name="categoryServiceImpl")
        private ICategoryService categoryServiceImpl;
 	   //获取品类的子节点
-	   @RequestMapping("/get_category")
+	   @RequestMapping(value="/get_category",method = RequestMethod.POST)
 	   @ResponseBody
 	   public ServerResponse<List<Category>> getCategories(HttpSession session,String name){
 		   //通过session中的对象获得当前登录的对象
@@ -51,7 +52,7 @@ public class CategoryController {
 		  
 	   }
 	   //增加品类
-	   @RequestMapping("/add_category")
+	   @RequestMapping(value="/add_category",method=RequestMethod.POST)
 	   @ResponseBody
 	  public ServerResponse<String> addCategory(HttpSession session,Category c){
 		   //获得在session中的用户
@@ -69,7 +70,7 @@ public class CategoryController {
 		   
 	   }
 	   //更新产品类名字
-	   @RequestMapping("/update_category")
+	   @RequestMapping(value="/update_category",method=RequestMethod.POST)
 	   @ResponseBody
 	   public ServerResponse<String> updateCategory(HttpSession session,Category c){
 		    User u = (User)session.getAttribute(Const.CURRENT_USER);
@@ -83,7 +84,7 @@ public class CategoryController {
 				   return ServerResponse.createByErrorMessage("请以管理员的身份登录");
 			   }
 	   }
-	   @RequestMapping("/get_category_tree")
+	   @RequestMapping(value="/get_category_tree",method=RequestMethod.POST)
 	   @ResponseBody
 	   public ServerResponse getAllCategory(HttpSession session,@RequestParam(value="categoryId",defaultValue="0")int categoryId){
 		   System.out.println("categoryId is " + categoryId);

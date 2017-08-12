@@ -1,5 +1,7 @@
 package com.listore.dao;
 
+import java.util.List;
+
 import com.listore.pojo.Product;
 
 public interface ProductMapper {
@@ -50,4 +52,9 @@ public interface ProductMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Product record);
+    /*
+     * 把所有的记录显示出来
+     * 
+     * */
+    List<Product> select();
 }
