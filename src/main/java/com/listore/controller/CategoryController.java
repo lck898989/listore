@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.listore.commen.Const;
@@ -84,7 +85,8 @@ public class CategoryController {
 	   }
 	   @RequestMapping("/get_category_tree")
 	   @ResponseBody
-	   public ServerResponse<String> updateCategory(HttpSession session,int categoryId){
+	   public ServerResponse getAllCategory(HttpSession session,@RequestParam(value="categoryId",defaultValue="0")int categoryId){
+		   System.out.println("categoryId is " + categoryId);
 		    User u = (User)session.getAttribute(Const.CURRENT_USER);
 		    if(u == null){
 		    	return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录请登录！");
