@@ -57,4 +57,6 @@ public interface ProductMapper {
      * 
      * */
     List<Product> select();
+
+	int updateStatusById(int productId,int status);
 }

@@ -56,7 +56,15 @@ public class IProductServiceImpl implements IProductService {
 					}
 				
 			 }
-			 return ServerResponse.createBySuccessMsg("产品错误");
+			 return ServerResponse.createBySuccessMsg("产品参数错误");
+		}
+		//设置产品的销售状态
+		public ServerResponse<String> setSaleStatus(int productId,int status){
+			int updateRow = productMapper.updateStatusById(productId,status);
+			if(updateRow > 0){
+				return ServerResponse.createBySuccessMsg("更新销售状态成功");
+			}
+			return ServerResponse.createByErrorMessage("更新销售状态失败");
 		}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.listore.commen.Const;
+import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
 import com.listore.pojo.Product;
 import com.listore.pojo.User;
@@ -34,7 +35,7 @@ public class ManageProductController {
 	  * 
 	  * 
 	  * */
-	 @RequestMapping(value="/save_product",method=RequestMethod.POST)
+	 @RequestMapping(value="/saveOrUpdate_product",method=RequestMethod.POST)
 	 @ResponseBody
 	 public ServerResponse saveOrUpdateProduct(HttpSession session,Product product){
 		 //检查用户是否登录
@@ -71,6 +72,21 @@ public class ManageProductController {
 		    		  return ServerResponse.createByErrorMessage("请以管理员身份登录");
 		           }
 		      }
+	 }
+	 /*
+	  * 改变商品销售状态
+	  * 
+	  * */
+	 public ServerResponse<String> setProductStatus(HttpSession session,int productId,int status){
+		 User user = (User)session.getAttribute(Const.CURRENT_USER);
+		 if(user == null){
+			 return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"您还未登录，请先登录");
+		 }
+		 if(userServer.check_admin_role(user).isSuccess()){
+			 return  productServer.setSaleStatus(productId,status);
+		 }else{
+			 return ServerResponse.createByErrorMessage("请以管理员身份登录");
+		 }
 	 }
 	 /*
 	  * 商品搜索

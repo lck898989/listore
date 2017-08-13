@@ -12,5 +12,6 @@ import com.listore.pojo.Product;
 public interface IProductService {
 	ServerResponse<List<Product>> getProducts();
 	ServerResponse saveOrUpdateProduct(Product product);
+	ServerResponse<String> setSaleStatus(int productId,int status);
 
 }
