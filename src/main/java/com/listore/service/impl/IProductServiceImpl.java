@@ -5,19 +5,24 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
 import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
+import com.listore.dao.CategoryMapper;
 import com.listore.dao.ProductMapper;
+import com.listore.pojo.Category;
 import com.listore.pojo.Product;
 import com.listore.service.IProductService;
+import com.listore.util.PropertiesUtil;
+import com.listore.vo.ProductDetail;
 @Service("productServer")
 public class IProductServiceImpl implements IProductService {
 	   @Resource
        private ProductMapper productMapper;
+	   @Resource
+	   private CategoryMapper categoryMapper;
 	    //商品列表
 		@Override
 		public ServerResponse<List<Product>> getProducts() {
@@ -79,6 +84,50 @@ public class IProductServiceImpl implements IProductService {
 				return ServerResponse.createBySuccessMsg("更新销售状态成功");
 			}
 			return ServerResponse.createByErrorMessage("更新销售状态失败");
+		}
+		//获得产品信息详情
+		@Override
+		public ServerResponse<Object> getProductDetails(Integer productId) {
+			if(productId == null){
+				return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
+			}
+			Product product = productMapper.selectByPrimaryKey(productId);
+			//返回一个VO 对象
+			if(product != null){
+				ProductDetail productDetails = assembleProductDetails(product);
+				return ServerResponse.createBySuccess(productDetails);
+			}
+			return ServerResponse.createByErrorMessage("获取产品详情失败");
+		}
+		//将一个pojo对象装换为一个ＶＯ对象
+		private ProductDetail assembleProductDetails(Product product){
+			ProductDetail productDetail = new ProductDetail();
+			productDetail.setId(product.getId());
+			productDetail.setCategoryId(product.getCategoryId());
+			productDetail.setDetail(product.getDetail());
+			productDetail.setName(product.getName());
+			productDetail.setMainImange(product.getMainImage());
+			productDetail.setSubtitle(product.getSubImages());
+			productDetail.setStatus(product.getStatus());
+			productDetail.setStock(product.getStock());
+			
+			
+			//设置imageHost:通过读取配置文件的内容进行对图片的地址进行配置防止硬编码  创建一个propertiesUtil处理配置文件
+			productDetail.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://www.li.com/"));
+			//设置createTime由于从数据库拿来的数据经过Product类的时候变成了毫秒数所以需要加工成时间类型
+			
+			
+			//设置updateTime
+			
+			//设置parentCategoryId
+			Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
+			if(category == null){
+				productDetail.setParentCategoryId(0);
+			}else{
+				productDetail.setParentCategoryId(category.getParentId());
+			}
+			
+			return null;
 		}
 
 }

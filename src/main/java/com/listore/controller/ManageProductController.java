@@ -93,6 +93,24 @@ public class ManageProductController {
 		 }
 	 }
 	 /*
+	  * 获取产品详情方法定义
+	  * 
+	  * */
+	 @RequestMapping(value="/get_product_details",method=RequestMethod.POST)
+	 @ResponseBody
+	 public ServerResponse<Product> getProductDetails(HttpSession session,Integer productId){
+		 User user = (User)session.getAttribute(Const.CURRENT_USER);
+		 if(user == null){
+			 return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"您还未登录，请先登录");
+		 }
+		 if(userServer.check_admin_role(user).isSuccess()){
+			 return  productServer.getProductDetails(productId);
+		 }else{
+			 return ServerResponse.createByErrorMessage("请以管理员身份登录");
+		 }
+		 
+	 }
+	 /*
 	  * 商品搜索
 	  * 
 	  * */
