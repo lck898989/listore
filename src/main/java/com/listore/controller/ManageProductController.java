@@ -5,9 +5,11 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.listore.commen.Const;
@@ -77,7 +79,9 @@ public class ManageProductController {
 	  * 改变商品销售状态
 	  * 
 	  * */
-	 public ServerResponse<String> setProductStatus(HttpSession session,int productId,int status){
+	 @RequestMapping(value="/set_saleStatus",method=RequestMethod.POST)
+	 @ResponseBody
+	 public ServerResponse<String> setSaleStatus(HttpSession session,@RequestParam(value = "productId",required=true)int productId,@RequestParam(value="status",required=true)int status){
 		 User user = (User)session.getAttribute(Const.CURRENT_USER);
 		 if(user == null){
 			 return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"您还未登录，请先登录");

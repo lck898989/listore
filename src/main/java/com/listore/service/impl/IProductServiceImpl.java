@@ -5,9 +5,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
 import com.listore.dao.ProductMapper;
 import com.listore.pojo.Product;
@@ -60,8 +62,20 @@ public class IProductServiceImpl implements IProductService {
 		}
 		//设置产品的销售状态
 		public ServerResponse<String> setSaleStatus(int productId,int status){
-			int updateRow = productMapper.updateStatusById(productId,status);
-			if(updateRow > 0){
+			if(StringUtils.isBlank(String.valueOf(productId)) || StringUtils.isBlank(String.valueOf(status))){
+				return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());			
+			}
+			//第一种方法进行更新销售状态
+			int  updateRow = productMapper.updateSaleStatusById(productId, status);
+			/*
+			 * 第二种方法更新销售状态
+			 * Product product = new Product();
+			 * product.setId(productId);
+			 * product.setStatus(status);
+			 * int updateRow = productMapper.updateByPrimaryKeySelective(product);
+			 * */
+			
+			if( updateRow> 0){
 				return ServerResponse.createBySuccessMsg("更新销售状态成功");
 			}
 			return ServerResponse.createByErrorMessage("更新销售状态失败");
