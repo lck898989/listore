@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
@@ -16,7 +17,8 @@ import com.listore.pojo.Category;
 import com.listore.pojo.Product;
 import com.listore.service.IProductService;
 import com.listore.util.PropertiesUtil;
-import com.listore.vo.ProductDetail;
+import com.listore.util.TimeUtil;
+import com.listore.vo.ProductDetailVo;
 @Service("productServer")
 public class IProductServiceImpl implements IProductService {
 	   @Resource
@@ -87,47 +89,66 @@ public class IProductServiceImpl implements IProductService {
 		}
 		//获得产品信息详情
 		@Override
-		public ServerResponse<Object> getProductDetails(Integer productId) {
+		public ServerResponse<ProductDetailVo> getProductDetailVos(Integer productId) {
 			if(productId == null){
 				return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
 			}
 			Product product = productMapper.selectByPrimaryKey(productId);
 			//返回一个VO 对象
 			if(product != null){
-				ProductDetail productDetails = assembleProductDetails(product);
-				return ServerResponse.createBySuccess(productDetails);
+				ProductDetailVo productDetailVos = assembleproductDetailVos(product);
+				return ServerResponse.createBySuccess(productDetailVos);
 			}
 			return ServerResponse.createByErrorMessage("获取产品详情失败");
 		}
 		//将一个pojo对象装换为一个ＶＯ对象
-		private ProductDetail assembleProductDetails(Product product){
-			ProductDetail productDetail = new ProductDetail();
-			productDetail.setId(product.getId());
-			productDetail.setCategoryId(product.getCategoryId());
-			productDetail.setDetail(product.getDetail());
-			productDetail.setName(product.getName());
-			productDetail.setMainImange(product.getMainImage());
-			productDetail.setSubtitle(product.getSubImages());
-			productDetail.setStatus(product.getStatus());
-			productDetail.setStock(product.getStock());
+		private ProductDetailVo assembleproductDetailVos(Product product){
+			ProductDetailVo productDetailVo = new ProductDetailVo();
+			productDetailVo.setId(product.getId());
+			productDetailVo.setCategoryId(product.getCategoryId());
+			productDetailVo.setDetail(product.getDetail());
+			productDetailVo.setName(product.getName());
+			productDetailVo.setMainImange(product.getMainImage());
+			productDetailVo.setSubtitle(product.getSubImages());
+			productDetailVo.setStatus(product.getStatus());
+			productDetailVo.setStock(product.getStock());
 			
 			
 			//设置imageHost:通过读取配置文件的内容进行对图片的地址进行配置防止硬编码  创建一个propertiesUtil处理配置文件
-			productDetail.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://www.li.com/"));
+			productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://www.li.com/"));
 			//设置createTime由于从数据库拿来的数据经过Product类的时候变成了毫秒数所以需要加工成时间类型
-			
-			
+			productDetailVo.setCreateTime(TimeUtil.dateToStr(product.getCreateTime()));
 			//设置updateTime
-			
+            productDetailVo.setUpdateTime(TimeUtil.dateToStr(product.getUpdateTime()));			
 			//设置parentCategoryId
 			Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
 			if(category == null){
-				productDetail.setParentCategoryId(0);
+				productDetailVo.setParentCategoryId(0);
 			}else{
-				productDetail.setParentCategoryId(category.getParentId());
+				productDetailVo.setParentCategoryId(category.getParentId());
 			}
 			
-			return null;
+			return productDetailVo;
+		}
+		/*
+		 * 获得产品列表  完成一个分页的功能
+		 * 
+		 * */
+		public ServerResponse<List<Product>> getProductList(int pageNum,int pageSize){
+			//产品列表有时候并不需要把所有的产品属性都列举出来这时候就需要一个中间的数据对象进行加工这里使用Value Object进行封装
+			/*
+			 * 利用PageHelper进行分页的实现顺序
+			 * 1：startPage -- start
+			 * 2:填充自己的sql查询逻辑
+			 * 3：pageHelper收尾
+			 * */
+			//利用PageHelper类进行分页功能的实现
+			PageHelper.startPage(pageNum, pageSize);
+			List<Product> productList = productMapper.select();
+			if(productList == null){
+				return ServerResponse.createByErrorMessage("查询错误");
+			}
+			return ServerResponse.createBySuccess(productList);
 		}
 
 }

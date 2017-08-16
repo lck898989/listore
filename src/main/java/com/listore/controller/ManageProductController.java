@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +18,7 @@ import com.listore.pojo.Product;
 import com.listore.pojo.User;
 import com.listore.service.IProductService;
 import com.listore.service.IUserService;
+import com.listore.vo.ProductDetailVo;
 
 /*
  * 后台管理商品控制器
@@ -98,13 +98,34 @@ public class ManageProductController {
 	  * */
 	 @RequestMapping(value="/get_product_details",method=RequestMethod.POST)
 	 @ResponseBody
-	 public ServerResponse<Product> getProductDetails(HttpSession session,Integer productId){
+	 public ServerResponse<ProductDetailVo> getProductDetails(HttpSession session,Integer productId){
 		 User user = (User)session.getAttribute(Const.CURRENT_USER);
 		 if(user == null){
 			 return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"您还未登录，请先登录");
 		 }
 		 if(userServer.check_admin_role(user).isSuccess()){
-			 return  productServer.getProductDetails(productId);
+			 return  productServer.getProductDetailVos(productId);
+		 }else{
+			 return ServerResponse.createByErrorMessage("请以管理员身份登录");
+		 }
+		 
+	 }
+	 /*
+	  * 获得产品列表
+	  * 将RequestParam中的pageNum设置为默认的1
+	  * 将RequestParam中的pageSize设置为默认的10条记录
+	  * 
+	  * */
+	 @RequestMapping(value="/get_product_list",method=RequestMethod.POST)
+	 @ResponseBody
+	 public ServerResponse<List<Product>> getProductList(HttpSession session,@RequestParam(value="pageNum",defaultValue="1") int pageNum,@RequestParam(value="pageSize",defaultValue="10") int pageSize){
+		 //检查用户登录状态
+		 User user = (User)session.getAttribute(Const.CURRENT_USER);
+		 if(user == null){
+			 return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"您还未登录，请先登录");
+		 }
+		 if(userServer.check_admin_role(user).isSuccess()){
+			 return  productServer.getProductList(pageNum,pageSize);
 		 }else{
 			 return ServerResponse.createByErrorMessage("请以管理员身份登录");
 		 }

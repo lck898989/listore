@@ -6,7 +6,7 @@ package com.listore.vo;
 
 import java.math.BigDecimal;
 
-public class ProductDetail {
+public class ProductDetailVo {
   private Integer id;
   private Integer categoryId;
   private String name;

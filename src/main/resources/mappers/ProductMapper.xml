@@ -29,7 +29,7 @@
     listore_product.detail as product_detail, listore_product.price as product_price, listore_product.stock as product_stock, 
     listore_product.status as product_status, listore_product.create_time as product_create_time, listore_product.update_time as product_update_time
   </sql>
-  <!-- 显示所有产品 -->
+  <!-- 显示所有产品的列表不要在listore_product后面添加分号因为在进行分页的时候，分页插件会添加limit语句 -->
   <select id="select" resultMap = "BaseResultMap">
        select 
        <include refid ="Base_Column_List"/>
