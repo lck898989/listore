@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
@@ -19,6 +20,7 @@ import com.listore.service.IProductService;
 import com.listore.util.PropertiesUtil;
 import com.listore.util.TimeUtil;
 import com.listore.vo.ProductDetailVo;
+import com.listore.vo.ProductListVo;
 @Service("productServer")
 public class IProductServiceImpl implements IProductService {
 	   @Resource
@@ -148,7 +150,32 @@ public class IProductServiceImpl implements IProductService {
 			if(productList == null){
 				return ServerResponse.createByErrorMessage("查询错误");
 			}
+			if(productList != null){
+				//将对象进行组装使其成为VO对象
+				List<ProductListVo> productVos = Lists.newArrayList();
+				for(Product productItem:productList){
+					//将对象进行组装
+					 ProductListVo plv = assembleProductListVo(productItem);
+					 productVos.add(plv);
+				}
+				PageInfo pageResult = new PageInfo(productList);
+				pageResult.setList(productVos);
+				return ServerResponse.createBySuccess(pageResult);
+			}
 			return ServerResponse.createBySuccess(productList);
+		}
+		//ProductListVo 组装方法
+		private ProductListVo assembleProductListVo(Product product){
+			ProductListVo productListVo = new ProductListVo();
+			productListVo.setId(product.getId());
+			productListVo.setCategoryId(product.getCategoryId());
+			productListVo.setMainImage(product.getMainImage());
+			productListVo.setName(product.getName());
+			productListVo.setPrice(product.getPrice());
+			productListVo.setStatus(product.getStatus());
+			productListVo.setSubtitle(product.getSubtitle());
+			productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://www.li.com/"));
+			return productListVo;
 		}
 
 }

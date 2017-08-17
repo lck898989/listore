@@ -50,9 +50,9 @@ public class TimeUtil {
 		DateTime dateTime = new DateTime(date);
 		return dateTime.toString(DATETIME_FORMATSTR);
 	}
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		System.out.println(TimeUtil.strToDate("2017-08-13 21:05:00","yyyy-MM-dd HH:mm:ss"));
 	    System.out.println(TimeUtil.dateToStr(new Date(),"yyyy-MM-dd HH:mm:ss"));
 	    System.out.println(new Date().getMonth());
-	}
+	}*/
 }
