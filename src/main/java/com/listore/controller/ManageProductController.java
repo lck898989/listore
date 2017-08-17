@@ -3,6 +3,7 @@ package com.listore.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.github.pagehelper.PageInfo;
 import com.listore.commen.Const;
 import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
@@ -118,7 +121,7 @@ public class ManageProductController {
 	  * */
 	 @RequestMapping(value="/get_product_list",method=RequestMethod.POST)
 	 @ResponseBody
-	 public ServerResponse<List<Product>> getProductList(HttpSession session,@RequestParam(value="pageNum",defaultValue="1") int pageNum,@RequestParam(value="pageSize",defaultValue="10") int pageSize){
+	 public ServerResponse<PageInfo> getProductList(HttpSession session,@RequestParam(value="pageNum",defaultValue="1") int pageNum,@RequestParam(value="pageSize",defaultValue="10") int pageSize){
 		 //检查用户登录状态
 		 User user = (User)session.getAttribute(Const.CURRENT_USER);
 		 if(user == null){
@@ -135,8 +138,27 @@ public class ManageProductController {
 	  * 商品搜索
 	  * 
 	  * */
-	/* public ServerResponse<List<Product>> searchProducts(){
+	 @RequestMapping(value="/searchProduct",method=RequestMethod.GET)
+	 @ResponseBody
+	 public ServerResponse<PageInfo> searchProduct(HttpSession session,String productName,int productId,@RequestParam(value="pageNum",defaultValue="1") int pageNum,@RequestParam(value="pageSize",defaultValue="10") int pageSize){
+		 //检查用户登录状态
+		 User user = (User)session.getAttribute(Const.CURRENT_USER);
+		 if(user == null){
+			 return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"您还未登录，请先登录");
+		 }
+		 if(userServer.check_admin_role(user).isSuccess()){
+			 return  productServer.searchProductByNameAndId(productName,productId,pageNum,pageSize);
+		 }else{
+			 return ServerResponse.createByErrorMessage("请以管理员身份登录");
+		 }
 		 
-	 }*/
+	 }
+	 @RequestMapping(value="/searchProduct",method=RequestMethod.POST)
+	 @ResponseBody
+	 public ServerResponse uploadFile(MultipartFile mFile,HttpServletRequest request){
+		 //同过session获得上下文及真实路径(即通过相对路径获得全路径)
+		 String path = request.getSession().getServletContext().getRealPath("/upload/");
+		 return null;
+	 }
 
 }

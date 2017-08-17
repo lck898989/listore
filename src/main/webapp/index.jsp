@@ -19,7 +19,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-
+    <%
+        out.write(request.getSession().getServletContext().getRealPath("/"));
+        String url = request.getRequestURL().toString();
+        System.out.println("url is " + url);
+        out.println("url :" + url + "<br>");
+        //得到URI
+        String uri = request.getRequestURI();
+        System.out.println("uri is " + uri);
+        out.println("uri is " + uri +"<br>");
+        //得到请求方的完整主机名
+        String remote_host = request.getRemoteHost();
+        System.out.println("RemostHost is " + remote_host);
+        out.println("RemotHost is " + remote_host + "<br>" );
+        //得到请求地方的网络端口号
+        int remote_port = request.getRemotePort();
+        out.println("remote port is " + remote_port+ "<br>");
+        
+        //得到服务器本机使用的端口号
+        int local_port = request.getLocalPort();
+        out.println("local port is " + local_port+ "<br>");
+        //得到服务器本机的IP地址
+        String local_addr = request.getLocalAddr();
+        out.println("local_addr is " + local_addr+ "<br>");
+        //得到服务器主机的主机名
+        String local_name = request.getLocalName();
+        out.println("local_name is "+local_name+ "<br>");
+        out.println(request.getSession().getServletContext().toString());
+         
+     %>
   </head>
   
   <body>

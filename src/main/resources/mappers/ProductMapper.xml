@@ -210,4 +210,18 @@
     set status=#{status}
     where id=#{productId}
   </update>
+  <!-- 搜索商品 -->
+  <select id="selectByProductNameAndProductId" parameterType="map" resultMap = "BaseResultMap">
+      select 
+      <include refid="Base_Column_List"/>
+      from listore_product 
+      <where>
+          <if test="productName != null">
+            and name like #{productName}
+          </if>
+          <if test="productId != null">
+            and id = #{productId}
+          </if>
+      </where>
+  </select>
 </mapper>

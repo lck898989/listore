@@ -136,7 +136,7 @@ public class IProductServiceImpl implements IProductService {
 		 * 获得产品列表  完成一个分页的功能
 		 * 
 		 * */
-		public ServerResponse<List<Product>> getProductList(int pageNum,int pageSize){
+		public ServerResponse<PageInfo> getProductList(int pageNum,int pageSize){
 			//产品列表有时候并不需要把所有的产品属性都列举出来这时候就需要一个中间的数据对象进行加工这里使用Value Object进行封装
 			/*
 			 * 利用PageHelper进行分页的实现顺序
@@ -146,6 +146,7 @@ public class IProductServiceImpl implements IProductService {
 			 * */
 			//利用PageHelper类进行分页功能的实现
 			PageHelper.startPage(pageNum, pageSize);
+			//填充自己的SQL语句
 			List<Product> productList = productMapper.select();
 			if(productList == null){
 				return ServerResponse.createByErrorMessage("查询错误");
@@ -162,7 +163,7 @@ public class IProductServiceImpl implements IProductService {
 				pageResult.setList(productVos);
 				return ServerResponse.createBySuccess(pageResult);
 			}
-			return ServerResponse.createBySuccess(productList);
+			return ServerResponse.createByErrorMessage("产品列表错误");
 		}
 		//ProductListVo 组装方法
 		private ProductListVo assembleProductListVo(Product product){
@@ -176,6 +177,28 @@ public class IProductServiceImpl implements IProductService {
 			productListVo.setSubtitle(product.getSubtitle());
 			productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://www.li.com/"));
 			return productListVo;
+		}
+		@Override
+		public ServerResponse<PageInfo> searchProductByNameAndId(String productName, int productId,int pageNum,int pageSize) {
+			PageHelper.startPage(pageNum, pageSize);
+			//加上%表示模糊查询的方式进行查询
+			if(StringUtils.isNotBlank(productName)){
+				productName = new StringBuilder().append("%").append(productName).append("%").toString();
+			}
+			List<Product> productList = Lists.newArrayList();
+			productList = productMapper.selectByProductNameAndProductId(productName,productId);
+			List<ProductListVo> productVoList = Lists.newArrayList();
+			if(productList != null){
+				for(Product productListItem:productList){
+					//将产品实体对象转化为VO对象
+					ProductListVo plv = assembleProductListVo(productListItem);
+					productVoList.add(plv);
+				}
+				PageInfo resultPage = new PageInfo(productList);
+				resultPage.setList(productVoList);
+				return ServerResponse.createBySuccess(resultPage);
+			}
+			return ServerResponse.createByErrorMessage("参数错误");
 		}
 
 }

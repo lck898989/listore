@@ -66,4 +66,6 @@ public interface ProductMapper {
     List<Product> select();
 
 	int updateSaleStatusById(@Param("productId")int productId,@Param("status")int status);
+
+	List<Product> selectByProductNameAndProductId(@Param("productName")String productName, @Param("productId")int productId);
 }

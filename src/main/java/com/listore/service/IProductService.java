@@ -2,6 +2,7 @@ package com.listore.service;
 
 import java.util.List;
 
+import com.github.pagehelper.PageInfo;
 import com.listore.commen.ServerResponse;
 import com.listore.pojo.Product;
 import com.listore.vo.ProductDetailVo;
@@ -15,6 +16,7 @@ public interface IProductService {
 	ServerResponse saveOrUpdateProduct(Product product);
 	ServerResponse<String> setSaleStatus(int productId,int status);
 	ServerResponse<ProductDetailVo> getProductDetailVos(Integer productId);
-	ServerResponse<List<Product>> getProductList(int pageNum,int pageSize);
+	ServerResponse<PageInfo> getProductList(int pageNum,int pageSize);
+	ServerResponse<PageInfo> searchProductByNameAndId(String productName, int productId,int pageNum,int pageSize);
 
 }
