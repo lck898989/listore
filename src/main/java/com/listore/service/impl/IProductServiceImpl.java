@@ -1,13 +1,6 @@
 package com.listore.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -24,6 +17,13 @@ import com.listore.util.PropertiesUtil;
 import com.listore.util.TimeUtil;
 import com.listore.vo.ProductDetailVo;
 import com.listore.vo.ProductListVo;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import sun.swing.StringUIClientPropertyKey;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 @Service("productServer")
 public class IProductServiceImpl implements IProductService {
 	   @Resource
@@ -242,28 +242,42 @@ public class IProductServiceImpl implements IProductService {
 			List<Integer> categoryIdList = new ArrayList<Integer>();
 			//单独判断cateogryId
 			if(categoryId != null){
+				//获得该对象
+				Category category = categoryMapper.selectByPrimaryKey(categoryId);
+				if(category == null && StringUtils.isBlank(productName)){
+					//没有命中数据库中的内容，但是也要有分页的内容
+					PageHelper.startPage(pageNum,pageSize);
+					List<ProductListVo> pvo = Lists.newArrayList();
+					PageInfo pageInfo = new PageInfo(pvo);
+					return ServerResponse.createBySuccess(pageInfo);
+				}
+				//需要用到递归算法来查询所有子节点
 				categoryIdList = iCategoryService.getThisCategoryChildCategories(categoryId).getData();
 			}
-			List<Product> productList = Lists.newArrayList();
 			if(StringUtils.isNoneBlank(productName)){
 				productName = new StringBuilder().append("%").append(productName).append("%").toString();
-				productList = productMapper.selectByProductNameAndCategoryIds(productName,categoryIdList);
+
 			}
-			 
-			
-			productList = productMapper.selectByProductName(productName,categoryId);
-			List<ProductDetailVo> productDetailVoList = Lists.newArrayList();
-            if(productList != null){
-            	for(Product productItem:productList){
-            		ProductDetailVo pdv = assembleproductDetailVos(productItem);
-            		productDetailVoList.add(pdv);
-            	}
-            	PageInfo resultPage = new PageInfo(productList);
-            	resultPage.setList(productDetailVoList);
-            	return ServerResponse.createBySuccess(resultPage);
-            }
-			
-			return ServerResponse.createByErrorMessage("结果集为空");
+			//开始分页
+			PageHelper.startPage(pageNum,pageSize);
+			//动态排序
+			if(StringUtils.isNotBlank(orderBy)){
+				if(Const.productOrder.productOrder.contains(orderBy)){
+					String[] orderByArray = orderBy.split("_");
+					//orderBy方法的格式为orderBy("price asc")
+					PageHelper.orderBy(orderByArray[0] + " " + orderByArray[1]);
+				}
+			}
+			//获得商品的列表
+			List<Product> productList = productMapper.selectByProductNameAndCategoryIds(StringUtils.isNotBlank(productName)? productName : null ,categoryIdList.size() == 0 ? null:categoryIdList);
+            List<ProductListVo> productListVos = Lists.newArrayList();
+			for(Product product:productList){
+				ProductListVo productListVo = assembleProductListVo(product);
+				productListVos.add(productListVo);
+			}
+			PageInfo pageInfo = new PageInfo(productList);
+			pageInfo.setList(productListVos);
+			return ServerResponse.createBySuccess(pageInfo);
 		}
 
 }

@@ -233,9 +233,10 @@
       and productName like #{productName}
     </if>
     <if test="categoryIdList != null">
-         <foreach>
-         
-         </foreach>
+      and category_id in
+      <foreach collection="categoryIdList" item="item" separator="," open="(" close=")" index="index">
+        #{item}
+      </foreach>
     </if>
   </select>
 </mapper>
