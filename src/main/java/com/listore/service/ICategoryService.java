@@ -19,5 +19,5 @@ public interface ICategoryService {
 		ServerResponse<String> addCategory(Category c);
 		//更新品类信息
 		ServerResponse<String> updateCategory(Category c);
-		ServerResponse getThisCategoryChildCategories(int categoryId);
+		ServerResponse<List<Integer>> getThisCategoryChildCategories(int categoryId);
 }

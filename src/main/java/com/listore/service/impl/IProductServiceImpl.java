@@ -1,5 +1,6 @@
 package com.listore.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,12 +11,14 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.listore.commen.Const;
 import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
 import com.listore.dao.CategoryMapper;
 import com.listore.dao.ProductMapper;
 import com.listore.pojo.Category;
 import com.listore.pojo.Product;
+import com.listore.service.ICategoryService;
 import com.listore.service.IProductService;
 import com.listore.util.PropertiesUtil;
 import com.listore.util.TimeUtil;
@@ -27,6 +30,9 @@ public class IProductServiceImpl implements IProductService {
        private ProductMapper productMapper;
 	   @Resource
 	   private CategoryMapper categoryMapper;
+	   //获取categoryId的服务
+	   @Resource(name="categoryServiceImpl")
+	   private ICategoryService iCategoryService;
 	    //商品列表
 		@Override
 		public ServerResponse<List<Product>> getProducts() {
@@ -199,6 +205,65 @@ public class IProductServiceImpl implements IProductService {
 				return ServerResponse.createBySuccess(resultPage);
 			}
 			return ServerResponse.createByErrorMessage("参数错误");
+		}
+		/*
+		 * 
+		 * 前台页面取得产品的细节
+		 * 
+		 * */
+		@Override
+		public ServerResponse<ProductDetailVo> productDetail(Integer productId) {
+			if(productId == null){
+				return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
+			}
+			Product product = productMapper.selectByPrimaryKey(productId);
+			//返回一个VO 对象
+			if(product != null){
+				//将pojo对象转换为浏览器要显示的对象
+				ProductDetailVo productDetailVos = assembleproductDetailVos(product);
+				return ServerResponse.createBySuccess(productDetailVos);
+			}
+			if(product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
+				return ServerResponse.createByErrorMessage("产品已经下架");
+			}
+			return ServerResponse.createByErrorMessage("获取产品详情失败");
+		}
+		/*
+		 * 前台页面进行搜索产品的需要
+		 * 
+		 * */
+		@Override
+		public ServerResponse<PageInfo> searchProductByNameAndCategoryIds(String productName,Integer categoryId, int pageNum, int pageSize,String orderBy) {
+			//判断名称是否为空
+			if(StringUtils.isBlank(productName) && categoryId == null){
+				return ServerResponse.createByErrorMessage("参数错误");
+			}
+			//用来盛放种类ID的容器
+			List<Integer> categoryIdList = new ArrayList<Integer>();
+			//单独判断cateogryId
+			if(categoryId != null){
+				categoryIdList = iCategoryService.getThisCategoryChildCategories(categoryId).getData();
+			}
+			List<Product> productList = Lists.newArrayList();
+			if(StringUtils.isNoneBlank(productName)){
+				productName = new StringBuilder().append("%").append(productName).append("%").toString();
+				productList = productMapper.selectByProductNameAndCategoryIds(productName,categoryIdList);
+			}
+			 
+			
+			productList = productMapper.selectByProductName(productName,categoryId);
+			List<ProductDetailVo> productDetailVoList = Lists.newArrayList();
+            if(productList != null){
+            	for(Product productItem:productList){
+            		ProductDetailVo pdv = assembleproductDetailVos(productItem);
+            		productDetailVoList.add(pdv);
+            	}
+            	PageInfo resultPage = new PageInfo(productList);
+            	resultPage.setList(productDetailVoList);
+            	return ServerResponse.createBySuccess(resultPage);
+            }
+			
+			return ServerResponse.createByErrorMessage("结果集为空");
 		}
 
 }

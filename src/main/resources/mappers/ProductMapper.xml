@@ -224,4 +224,18 @@
           </if>
       </where>
   </select>
+  <select id="selectByProductNameAndCategoryIds" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid = "Base_Column_List"/>
+    from listore_product
+    where status = 1
+    <if test="productName != null">
+      and productName like #{productName}
+    </if>
+    <if test="categoryIdList != null">
+         <foreach>
+         
+         </foreach>
+    </if>
+  </select>
 </mapper>

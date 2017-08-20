@@ -89,7 +89,7 @@ public class ICategoryServiceImpl implements ICategoryService{
 		  }
 	}
    //获得该节点的所有子节点
-	public ServerResponse getThisCategoryChildCategories(int categoryId){
+	public ServerResponse<List<Integer>> getThisCategoryChildCategories(int categoryId){
 		 Set<Category> categorySet = Sets.newHashSet();
 		 findDeepCategoryById(categorySet,categoryId);
 		 //这时候categroySet已经被填充完毕了
