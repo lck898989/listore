@@ -16,7 +16,14 @@
          http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         <context:annotation-config/>
+        <context:component-scan base-package="com.listore.dao"/>
+        <context:component-scan base-package="com.listore.pojo"/>
+        <context:component-scan base-package="com.listore.service"/>
+        
+        <context:component-scan base-package="com.listore.service.impl"/>
         <context:component-scan base-package="com.listore.controller"/>
+        <context:component-scan base-package="com.listore.controller.backStage"/>
+        <!-- <context:component-scan base-package="com.listore.vo"/> -->
         <!-- 配置字符编码 -->
         <mvc:annotation-driven>
                <mvc:message-converters>
@@ -28,15 +35,24 @@
                            			</list>
                            </property>
                       </bean>
-                      <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                      <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
                       	   <property name="supportedMediaTypes">
                       	            <list>
-                      	                 <value>application/json;charset-UTF-8</value>
+                      	                 <value>application/json;charset=UTF-8</value>
                       	            </list>
                       	   </property>
                       </bean>
-               </mvc:message-converters>
+               </mvc:message-converters> 
         </mvc:annotation-driven>
+        
+        <!-- 配置映射路径  
+        <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
+     
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        		<property name="suffix" value=".jsp"/>
+        </bean>
+        -->
+        <mvc:default-servlet-handler/>
         <!-- 配置文件上传 -->
         <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         		<property name="maxInMemorySize" value="4096"/>

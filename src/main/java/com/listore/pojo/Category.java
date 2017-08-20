@@ -233,4 +233,28 @@ public class Category {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+    //这里要重写父类的hashCode()方法和equals()方法防止Set中出现重复元素
+    /*
+     * equals 返回true那么hasCode()一定相同
+     * hasCode()相同，但是equals放回不一定是true
+     * */
+	@Override
+	public int hashCode() {
+		 return id != null ? id.hashCode() : 0;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Category){
+			Category c = (Category)obj;
+		     if(this.getId() == c.getId()){
+		    	 return true;
+		     }else{
+		    	 return false;
+		     }
+		}else{
+			return false;
+		}
+	} 
+    
+    
 }

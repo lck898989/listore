@@ -2,6 +2,7 @@ package com.listore.pojo;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Repository;
 public class User {
     /**
      *
