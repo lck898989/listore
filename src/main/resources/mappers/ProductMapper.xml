@@ -42,8 +42,8 @@
     -->
     select 
     <include refid="Base_Column_List" />
-    from listore_product product
-    where product.id = #{id,jdbcType=INTEGER}
+    from listore_product 
+    where id = #{productId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
@@ -230,11 +230,12 @@
     from listore_product
     where status = 1
     <if test="productName != null">
-      and productName like #{productName}
+      and name like #{productName}
     </if>
-    <if test="categoryIdList != null">
-         <foreach>
-         
+    <if test="categoryIds != null">
+       and category_id in
+         <foreach collection="categoryIds" index="index" item="item" open="(" separator="," close=")">
+              #{item}
          </foreach>
     </if>
   </select>

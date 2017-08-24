@@ -1,6 +1,5 @@
 package com.listore.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -219,14 +218,14 @@ public class IProductServiceImpl implements IProductService {
 			Product product = productMapper.selectByPrimaryKey(productId);
 			//返回一个VO 对象
 			if(product != null){
+				if(product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
+					return ServerResponse.createByErrorMessage("产品已经下架");
+				}
 				//将pojo对象转换为浏览器要显示的对象
 				ProductDetailVo productDetailVos = assembleproductDetailVos(product);
 				return ServerResponse.createBySuccess(productDetailVos);
 			}
-			if(product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
-				return ServerResponse.createByErrorMessage("产品已经下架");
-			}
-			return ServerResponse.createByErrorMessage("获取产品详情失败");
+			return ServerResponse.createByErrorMessage("产品下架或者删除");
 		}
 		/*
 		 * 前台页面进行搜索产品的需要
@@ -234,36 +233,48 @@ public class IProductServiceImpl implements IProductService {
 		 * */
 		@Override
 		public ServerResponse<PageInfo> searchProductByNameAndCategoryIds(String productName,Integer categoryId, int pageNum, int pageSize,String orderBy) {
-			//判断名称是否为空
-			if(StringUtils.isBlank(productName) && categoryId == null){
-				return ServerResponse.createByErrorMessage("参数错误");
-			}
-			//用来盛放种类ID的容器
-			List<Integer> categoryIdList = new ArrayList<Integer>();
-			//单独判断cateogryId
-			if(categoryId != null){
-				categoryIdList = iCategoryService.getThisCategoryChildCategories(categoryId).getData();
-			}
-			List<Product> productList = Lists.newArrayList();
-			if(StringUtils.isNoneBlank(productName)){
-				productName = new StringBuilder().append("%").append(productName).append("%").toString();
-				productList = productMapper.selectByProductNameAndCategoryIds(productName,categoryIdList);
-			}
+		 if(StringUtils.isBlank(productName) && categoryId == null){
+			 return ServerResponse.createByErrorMessage("参数错误");
+		 }
+		 List<Integer> categoryIds = Lists.newArrayList();
+		 if(categoryId != null){
+			 Category category = categoryMapper.selectByPrimaryKey(categoryId);
+			 if(category == null && StringUtils.isBlank(productName)){
+				 PageHelper.startPage(pageNum, pageSize);
+				 List<ProductListVo> productListVos = Lists.newArrayList();
+                 PageInfo pageInfo = new PageInfo(productListVos);
+                 return ServerResponse.createBySuccess(pageInfo);
+			 }
+			 //获得种类的全部id结合
+			 categoryIds = iCategoryService.getThisCategoryChildCategories(categoryId).getData();
+		 }
+		 if(StringUtils.isNoneBlank(productName)){
+			 productName = new StringBuilder().append("%").append(productName).append("%").toString();
+		 }
+		//动态排序
+		 if(StringUtils.isNoneBlank(orderBy)){
+			 if(Const.prouductOrderBy.orderBySet.contains(orderBy)){
+			  String[] orderByArray = orderBy.split("_");
+			  PageHelper.orderBy(orderByArray[0] + " " + orderByArray[1]);
+			 }
+		 }
+		 PageHelper.startPage(pageNum, pageSize);
+		 List<Product> productList = Lists.newArrayList();
+		 
+		 productList = productMapper.selectByProductNameAndCategoryIds(StringUtils.isBlank(productName)?null:productName,categoryIds.size() == 0?null:categoryIds);
+		 List<ProductListVo> productListVos = Lists.newArrayList();
+		 if(productList != null){
+			 for(Product product:productList){
+				 ProductListVo plv = assembleProductListVo(product);
+				 productListVos.add(plv);
+			 }
 			 
-			
-			productList = productMapper.selectByProductName(productName,categoryId);
-			List<ProductDetailVo> productDetailVoList = Lists.newArrayList();
-            if(productList != null){
-            	for(Product productItem:productList){
-            		ProductDetailVo pdv = assembleproductDetailVos(productItem);
-            		productDetailVoList.add(pdv);
-            	}
-            	PageInfo resultPage = new PageInfo(productList);
-            	resultPage.setList(productDetailVoList);
-            	return ServerResponse.createBySuccess(resultPage);
-            }
-			
-			return ServerResponse.createByErrorMessage("结果集为空");
+			 
+			 PageInfo pageInfo = new PageInfo(productList);
+			 pageInfo.setList(productListVos);
+			 return ServerResponse.createBySuccess(pageInfo);
+		 }
+		 return ServerResponse.createByErrorMessage("参数错误");
 		}
 
 }

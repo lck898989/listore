@@ -20,7 +20,7 @@ import com.listore.vo.ProductDetailVo;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
-	@Resource(name="iProductService")
+	@Resource(name="productServer")
 	private IProductService iProductService;
 	
 	/*

@@ -146,7 +146,7 @@ public class ManageProductController {
 	  * 商品搜索
 	  * 
 	  * */
-	 @RequestMapping(value="/searchProduct",method=RequestMethod.GET)
+	 @RequestMapping(value="/searchProduct",method=RequestMethod.POST)
 	 @ResponseBody
 	 public ServerResponse<PageInfo> searchProduct(HttpSession session,String productName,int productId,@RequestParam(value="pageNum",defaultValue="1") int pageNum,@RequestParam(value="pageSize",defaultValue="10") int pageSize){
 		 //检查用户登录状态
@@ -173,6 +173,8 @@ public class ManageProductController {
 			 return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"您还未登录，请先登录");
 		 }
 		 if(userServer.check_admin_role(user).isSuccess()){
+			 System.out.println("mfile is " + mFile);
+			if(mFile != null){
 			//同过session获得上下文及真实路径(即通过相对路径获得全路径)
 			 String path = request.getSession().getServletContext().getRealPath("upload");
 			 System.out.println("in controller path is " + path);
@@ -187,7 +189,10 @@ public class ManageProductController {
 				 return ServerResponse.createBySuccess(fileMap);
 			 }
 			 return ServerResponse.createByErrorMessage("url is null or blank");
-		 }else{
+			}else{
+				return ServerResponse.createByErrorMessage("文件错误");
+			}
+			}else{
 			 return ServerResponse.createByErrorMessage("请以管理员身份登录");
 		 }
 		 
