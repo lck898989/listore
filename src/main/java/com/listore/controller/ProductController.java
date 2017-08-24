@@ -23,11 +23,10 @@ import com.listore.vo.ProductDetailVo;
 public class ProductController {
 	@Resource(name="productServer")
 	private IProductService iProductService;
-	
 	/*
 	 * 获得产品的详细信息
 	 * */
-	@RequestMapping(value="/productDetail",method=RequestMethod.POST)
+	@RequestMapping(value="/productDetail")
 	@ResponseBody
 	public ServerResponse<ProductDetailVo> detailProduct(Integer productId){
 		return iProductService.productDetail(productId);
@@ -38,7 +37,7 @@ public class ProductController {
 	 * 查询的时候要用到产品类别ID
 	 * 如果查询到最顶上的id需要递归查询其子ID
 	 * */
-	@RequestMapping(value="/searchProduct",method= RequestMethod.POST)
+	@RequestMapping(value="/searchProduct")
 	@ResponseBody
 	public ServerResponse<PageInfo> searchProduct(@RequestParam(value="productName",required=false)String productName,
 													@RequestParam(value="categoryId",required=false)Integer categoryId,

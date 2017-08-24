@@ -146,9 +146,9 @@ public class ManageProductController {
 	  * 商品搜索
 	  * 
 	  * */
-	 @RequestMapping(value="/searchProduct",method=RequestMethod.POST)
+	 @RequestMapping(value="/searchProduct")
 	 @ResponseBody
-	 public ServerResponse<PageInfo> searchProduct(HttpSession session,String productName,int productId,@RequestParam(value="pageNum",defaultValue="1") int pageNum,@RequestParam(value="pageSize",defaultValue="10") int pageSize){
+	 public ServerResponse<PageInfo> searchProduct(HttpSession session,String productName,Integer productId,@RequestParam(value="pageNum",defaultValue="1") int pageNum,@RequestParam(value="pageSize",defaultValue="10") int pageSize){
 		 //检查用户登录状态
 		 User user = (User)session.getAttribute(Const.CURRENT_USER);
 		 if(user == null){

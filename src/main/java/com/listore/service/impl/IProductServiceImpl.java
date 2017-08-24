@@ -187,13 +187,15 @@ public class IProductServiceImpl implements IProductService {
 			return productListVo;
 		}
 		@Override
-		public ServerResponse<PageInfo> searchProductByNameAndId(String productName, int productId,int pageNum,int pageSize) {
+		public ServerResponse<PageInfo> searchProductByNameAndId(String productName, Integer productId,int pageNum,int pageSize) {
 			PageHelper.startPage(pageNum, pageSize);
 			//加上%表示模糊查询的方式进行查询
 			if(StringUtils.isNotBlank(productName)){
 				productName = new StringBuilder().append("%").append(productName).append("%").toString();
 			}
+			System.out.println("productName is " + productName);
 			List<Product> productList = Lists.newArrayList();
+			System.out.println("productMapper is " + productMapper);
 			productList = productMapper.selectByProductNameAndProductId(productName,productId);
 			List<ProductListVo> productVoList = Lists.newArrayList();
 			if(productList != null){
