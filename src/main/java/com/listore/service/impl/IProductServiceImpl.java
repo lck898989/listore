@@ -18,6 +18,8 @@ import com.listore.util.TimeUtil;
 import com.listore.vo.ProductDetailVo;
 import com.listore.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
 import org.springframework.stereotype.Service;
 import sun.swing.StringUIClientPropertyKey;
 
@@ -268,7 +270,7 @@ public class IProductServiceImpl implements IProductService {
 					PageHelper.orderBy(orderByArray[0] + " " + orderByArray[1]);
 				}
 			}
-			//获得商品的列表
+			//获得商品的列表 因为pagehelper.startPage()以后会寻找执行SQL语句的进程 找到之后他把List对象置为Page对象
 			List<Product> productList = productMapper.selectByProductNameAndCategoryIds(StringUtils.isNotBlank(productName)? productName : null ,categoryIdList.size() == 0 ? null:categoryIdList);
             List<ProductListVo> productListVos = Lists.newArrayList();
 			for(Product product:productList){
@@ -279,5 +281,4 @@ public class IProductServiceImpl implements IProductService {
 			pageInfo.setList(productListVos);
 			return ServerResponse.createBySuccess(pageInfo);
 		}
-
 }
