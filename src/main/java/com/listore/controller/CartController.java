@@ -29,14 +29,14 @@ public class CartController {
 	 * 
 	 * */
 	@RequestMapping("/add_product_toCart")
-	public ServerResponse add(HttpSession session,Integer userId,Integer prouductId,int count){
+	public ServerResponse add(HttpSession session,Integer userId,Integer productId,int count){
 		//检查用户是否登录
 		User user = (User)session.getAttribute(Const.CURRENT_USER);
 		//如果用户不存在的话返回一个提示信息
 		if(user == null){
 			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
 		}
-		return cartService.
+		return cartService.add(userId, productId, count);
 		
 	}
 }
