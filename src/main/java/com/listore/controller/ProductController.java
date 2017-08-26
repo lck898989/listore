@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -20,13 +21,12 @@ import com.listore.vo.ProductDetailVo;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
-	@Resource(name="iProductService")
+	@Resource(name="productServer")
 	private IProductService iProductService;
-	
 	/*
 	 * 获得产品的详细信息
 	 * */
-	@RequestMapping("/productDetail")
+	@RequestMapping(value="/productDetail")
 	@ResponseBody
 	public ServerResponse<ProductDetailVo> detailProduct(Integer productId){
 		return iProductService.productDetail(productId);
@@ -37,7 +37,7 @@ public class ProductController {
 	 * 查询的时候要用到产品类别ID
 	 * 如果查询到最顶上的id需要递归查询其子ID
 	 * */
-	@RequestMapping("/searchProduct")
+	@RequestMapping(value="/searchProduct")
 	@ResponseBody
 	public ServerResponse<PageInfo> searchProduct(@RequestParam(value="productName",required=false)String productName,
 													@RequestParam(value="categoryId",required=false)Integer categoryId,

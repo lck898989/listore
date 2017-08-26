@@ -1,5 +1,9 @@
 package com.listore.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.listore.pojo.Cart;
 
 public interface CartMapper {
@@ -50,4 +54,6 @@ public interface CartMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Cart record);
+
+	Cart selectByProductIdUserId(@Param("userId")Integer userId, @Param("productId")Integer productId);
 }

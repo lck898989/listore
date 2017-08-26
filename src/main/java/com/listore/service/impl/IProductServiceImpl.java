@@ -18,6 +18,8 @@ import com.listore.util.TimeUtil;
 import com.listore.vo.ProductDetailVo;
 import com.listore.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
 import org.springframework.stereotype.Service;
 import sun.swing.StringUIClientPropertyKey;
 
@@ -185,13 +187,15 @@ public class IProductServiceImpl implements IProductService {
 			return productListVo;
 		}
 		@Override
-		public ServerResponse<PageInfo> searchProductByNameAndId(String productName, int productId,int pageNum,int pageSize) {
+		public ServerResponse<PageInfo> searchProductByNameAndId(String productName, Integer productId,int pageNum,int pageSize) {
 			PageHelper.startPage(pageNum, pageSize);
 			//加上%表示模糊查询的方式进行查询
 			if(StringUtils.isNotBlank(productName)){
 				productName = new StringBuilder().append("%").append(productName).append("%").toString();
 			}
+			System.out.println("productName is " + productName);
 			List<Product> productList = Lists.newArrayList();
+			System.out.println("productMapper is " + productMapper);
 			productList = productMapper.selectByProductNameAndProductId(productName,productId);
 			List<ProductListVo> productVoList = Lists.newArrayList();
 			if(productList != null){
@@ -268,7 +272,7 @@ public class IProductServiceImpl implements IProductService {
 					PageHelper.orderBy(orderByArray[0] + " " + orderByArray[1]);
 				}
 			}
-			//获得商品的列表
+			//获得商品的列表 因为pagehelper.startPage()以后会寻找执行SQL语句的进程 找到之后他把List对象置为Page对象
 			List<Product> productList = productMapper.selectByProductNameAndCategoryIds(StringUtils.isNotBlank(productName)? productName : null ,categoryIdList.size() == 0 ? null:categoryIdList);
             List<ProductListVo> productListVos = Lists.newArrayList();
 			for(Product product:productList){
@@ -279,5 +283,4 @@ public class IProductServiceImpl implements IProductService {
 			pageInfo.setList(productListVos);
 			return ServerResponse.createBySuccess(pageInfo);
 		}
-
 }

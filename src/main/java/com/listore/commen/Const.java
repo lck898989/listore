@@ -12,6 +12,11 @@ public class Const {
 	public interface productOrder{
 		Set<String> productOrder = Sets.newHashSet("price_desc","price_asc");
 	}
+	public interface Cart{
+		int CHECKED = 1;
+		int UN_CHECKED = 0;
+		
+	}
 	public interface Role {
 		int ROLE_CUSTOM = 0;// 普通用户
 		int ROLE_ADMIN = 1; //管理员
