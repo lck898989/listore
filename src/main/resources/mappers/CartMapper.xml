@@ -179,11 +179,22 @@
     </foreach>
   </delete>
   <!--更新节点的时候要重置时间-->
-  <update id="selectOrUnSelectAll" parameterType="map">
+  <update id="selectOrUnSelectByUserIdProductIds" parameterType="map">
     update listore_cart
     SET
     checked = #{checked},
-    update_time=now()
-    where user_id = #{userId}
+    update_time = now()
+    <where>
+      user_id = #{userId}
+       <if test="productId != null">
+          and product_id = #{productId}
+       </if>
+    </where>
+
   </update>
+  <select id="selectProductCountByUserId" parameterType="int" resultType="int">
+    select  IFNULL(sum(quantity),0)
+    from listore_cart
+    where user_id = #{userId}
+  </select>
 </mapper>

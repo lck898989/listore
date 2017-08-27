@@ -23,8 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/cart")
 public class CartController {
-	@Resource(name="cartServer")
+	@Resource(name = "cartServer")
 	private ICartService cartService;
+
 	/*
 	 * 
 	 * 添加商品到购物车的方法
@@ -33,26 +34,28 @@ public class CartController {
 	* */
 	@RequestMapping("/add_product_toCart")
 	@ResponseBody
-	public ServerResponse<CartVo> add(HttpSession session, Integer productId, int count){
+	public ServerResponse<CartVo> add(HttpSession session, Integer productId, int count) {
 		//检查用户是否登录,防止横向越权纵向越权
-		User user = (User)session.getAttribute(Const.CURRENT_USER);
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
 		//如果用户为空的话返回一个提示信息
-		if(user == null){
-			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
 		}
 		return cartService.add(user.getId(), productId, count);
-		
+
 	}
+
 	@RequestMapping("/update")
 	@ResponseBody
-	public ServerResponse<CartVo> update(HttpSession session, Integer productId, int count){
-		User user = (User)session.getAttribute(Const.CURRENT_USER);
-		if(user == null){
-			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+	public ServerResponse<CartVo> update(HttpSession session, Integer productId, int count) {
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
 
 		}
 		return cartService.update(user.getId(), productId, count);
 	}
+
 	/*
 	*
 	* 删除购物车中的商品的方法
@@ -60,45 +63,85 @@ public class CartController {
 	* */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public ServerResponse<CartVo> deleteProduct(HttpSession session, String productIds){
-		User user = (User)session.getAttribute(Const.CURRENT_USER);
-		if(user == null){
-			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+	public ServerResponse<CartVo> deleteProduct(HttpSession session, String productIds) {
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
 
 		}
 		return cartService.deleteProduct(user.getId(), productIds);
 	}
+
 	//查询购物车的接口
 	@RequestMapping("/list")
 	@ResponseBody
-	public ServerResponse<CartVo> list(HttpSession session){
-		User user = (User)session.getAttribute(Const.CURRENT_USER);
-		if(user == null){
-			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+	public ServerResponse<CartVo> list(HttpSession session) {
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
 
 		}
 		return cartService.listProduct(user.getId());
 	}
+
 	//全选商品的接口
 	@RequestMapping("/select_all")
 	@ResponseBody
-	public ServerResponse<CartVo> selectAll(HttpSession session,Integer checked){
-		User user = (User)session.getAttribute(Const.CURRENT_USER);
-		if(user == null){
-			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+	public ServerResponse<CartVo> selectAll(HttpSession session) {
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
 
 		}
-		return cartService.selectOrUnSelectAll(user.getId(),Const.Cart.CHECKED);
+		return cartService.selectOrUnselect(user.getId(),null,Const.Cart.CHECKED);
 	}
+
 	//全反选商品的接口
 	@RequestMapping("/unSelect_all")
 	@ResponseBody
-	public ServerResponse<CartVo> unSelectAll(HttpSession session,Integer checked){
-		User user = (User)session.getAttribute(Const.CURRENT_USER);
-		if(user == null){
-			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+	public ServerResponse<CartVo> unSelectAll(HttpSession session) {
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
 
 		}
-		return cartService.selectOrUnSelectAll(user.getId(),Const.Cart.UN_CHECKED);
+		return cartService.selectOrUnselect(user.getId(),null,Const.Cart.UN_CHECKED);
+	}
+	/*
+	*
+	* 单独选择的接口方法
+	*
+	* */
+	@RequestMapping("/selectAlone")
+	@ResponseBody
+	public ServerResponse<CartVo> selectAlone(HttpSession session,Integer productId){
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+		}
+		return cartService.selectOrUnselect(user.getId(),productId,Const.Cart.CHECKED);
+
+	}
+	//单独反选的接口方法
+	@RequestMapping("/unSelectAlone")
+	@ResponseBody
+	public ServerResponse<CartVo> unSelectAlone(HttpSession session,Integer productId){
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+		}
+		return cartService.selectOrUnselect(user.getId(),productId,Const.Cart.UN_CHECKED);
+
+	}
+	//获得购物车中的商品数量的接口
+	@RequestMapping("/getProudctCountInCart")
+	@ResponseBody
+	public ServerResponse<Integer> getProudctCountInCart(HttpSession session){
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
+		if (user == null) {
+			return ServerResponse.createBySuccess(0);
+		}
+		return cartService.selectProductCountInCart(user.getId());
+
 	}
 }

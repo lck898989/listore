@@ -107,15 +107,24 @@ public class ICartServiceImpl implements ICartService {
 		cartVo = this.getCartVo(userId);
 		return ServerResponse.createBySuccess(cartVo);
 	}
-	//全选或者全反选:意味着一个用户的购物车的商品的状态都为1或者为0，只要确保传过来的参数userId和checked的值
-	public ServerResponse<CartVo> selectOrUnSelectAll(Integer userId,Integer checked){
-          if(checked == null){
-			  return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
-		  }
-		 int updateCount = cartMapper.selectOrUnSelectAll(userId,checked);
-		//更新过后进行前端展示
-		return this.listProduct(userId);
-
+    //单独选择某些商品或者全反选全选（只要productId为空的时候可以实现全选和全反选）
+	@Override
+	public ServerResponse<CartVo> selectOrUnselect(Integer userId,Integer productId,Integer checked) {
+		if(productId == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
+		}
+		int updateCount = cartMapper.selectOrUnSelectByUserIdProductIds(userId,productId,checked);
+	    if(updateCount > 0){
+			//更新成功
+			return this.listProduct(userId);
+		}
+		return ServerResponse.createByErrorMessage("更新失败");
+	}
+    //获得购物车中的产品数量
+	@Override
+	public ServerResponse<Integer> selectProductCountInCart(Integer userId) {
+        int resultCount = cartMapper.selectProductCountByUserId(userId);
+		return ServerResponse.createBySuccess(resultCount);
 	}
 
 	//将pojo对象封装成VO对象
