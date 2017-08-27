@@ -156,4 +156,34 @@
      where user_id=#{userId} 
      and product_id=#{productId}
   </select>
+  <select id="selectByUserId" parameterType="int" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from listore_cart
+    WHERE user_id = #{userId}
+  </select>
+  <select id="selectCartProductCheckedByUserId" parameterType="int" resultType="int">
+    select count(1) from listore_cart where checked=0 and user_id=#{userId}
+  </select>
+  <delete id="deleteByUserIdProductIds" parameterType="map">
+    delete from listore_cart
+    where user_id=#{userId}
+    <if test="productIdList != null">
+      and product_id in
+      <foreach collection="productIdList" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <foreach collection="productIdList" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+    </foreach>
+  </delete>
+  <!--更新节点的时候要重置时间-->
+  <update id="selectOrUnSelectAll" parameterType="map">
+    update listore_cart
+    SET
+    checked = #{checked},
+    update_time=now()
+    where user_id = #{userId}
+  </update>
 </mapper>

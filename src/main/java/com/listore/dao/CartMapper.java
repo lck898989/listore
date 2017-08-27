@@ -56,4 +56,12 @@ public interface CartMapper {
     int updateByPrimaryKey(Cart record);
 
 	Cart selectByProductIdUserId(@Param("userId")Integer userId, @Param("productId")Integer productId);
+
+    List<Cart> selectByUserId(Integer userId);
+
+    int selectCartProductCheckedByUserId(Integer userId);
+
+    int deleteByUserIdProductIds(@Param("userId")Integer userId,@Param("productList")List<String> productIdList);
+
+    int selectOrUnSelectAll(@Param("userId") Integer userId, @Param("checked") Integer checked);
 }

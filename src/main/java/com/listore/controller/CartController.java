@@ -3,6 +3,7 @@ package com.listore.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.listore.vo.CartVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -12,6 +13,7 @@ import com.listore.commen.ServerResponse;
 import com.listore.pojo.Product;
 import com.listore.pojo.User;
 import com.listore.service.ICartService;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /*
  * 
@@ -26,17 +28,77 @@ public class CartController {
 	/*
 	 * 
 	 * 添加商品到购物车的方法
+	 * 核心方法，涉及到主要方法getCartVo()的封装
 	 * 
-	 * */
+	* */
 	@RequestMapping("/add_product_toCart")
-	public ServerResponse add(HttpSession session,Integer userId,Integer productId,int count){
-		//检查用户是否登录
+	@ResponseBody
+	public ServerResponse<CartVo> add(HttpSession session, Integer productId, int count){
+		//检查用户是否登录,防止横向越权纵向越权
 		User user = (User)session.getAttribute(Const.CURRENT_USER);
-		//如果用户不存在的话返回一个提示信息
+		//如果用户为空的话返回一个提示信息
 		if(user == null){
 			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
 		}
-		return cartService.add(userId, productId, count);
+		return cartService.add(user.getId(), productId, count);
 		
+	}
+	@RequestMapping("/update")
+	@ResponseBody
+	public ServerResponse<CartVo> update(HttpSession session, Integer productId, int count){
+		User user = (User)session.getAttribute(Const.CURRENT_USER);
+		if(user == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+
+		}
+		return cartService.update(user.getId(), productId, count);
+	}
+	/*
+	*
+	* 删除购物车中的商品的方法
+	*
+	* */
+	@RequestMapping("/delete")
+	@ResponseBody
+	public ServerResponse<CartVo> deleteProduct(HttpSession session, String productIds){
+		User user = (User)session.getAttribute(Const.CURRENT_USER);
+		if(user == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+
+		}
+		return cartService.deleteProduct(user.getId(), productIds);
+	}
+	//查询购物车的接口
+	@RequestMapping("/list")
+	@ResponseBody
+	public ServerResponse<CartVo> list(HttpSession session){
+		User user = (User)session.getAttribute(Const.CURRENT_USER);
+		if(user == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+
+		}
+		return cartService.listProduct(user.getId());
+	}
+	//全选商品的接口
+	@RequestMapping("/select_all")
+	@ResponseBody
+	public ServerResponse<CartVo> selectAll(HttpSession session,Integer checked){
+		User user = (User)session.getAttribute(Const.CURRENT_USER);
+		if(user == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+
+		}
+		return cartService.selectOrUnSelectAll(user.getId(),Const.Cart.CHECKED);
+	}
+	//全反选商品的接口
+	@RequestMapping("/unSelect_all")
+	@ResponseBody
+	public ServerResponse<CartVo> unSelectAll(HttpSession session,Integer checked){
+		User user = (User)session.getAttribute(Const.CURRENT_USER);
+		if(user == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+
+		}
+		return cartService.selectOrUnSelectAll(user.getId(),Const.Cart.UN_CHECKED);
 	}
 }
