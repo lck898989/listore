@@ -149,7 +149,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-  <select id="selectByProductIdUserId" parameterType="map" resultType="com.listore.pojo.Cart">
+  <select id="selectByProductIdUserId" parameterType="map" resultMap="BaseResultMap">
      select 
      <include refid="Base_Column_List"/>
      from listore_cart
@@ -174,9 +174,6 @@
         #{item}
       </foreach>
     </if>
-    <foreach collection="productIdList" index="index" item="item" open="(" separator="," close=")">
-          #{item}
-    </foreach>
   </delete>
   <!--更新节点的时候要重置时间-->
   <update id="selectOrUnSelectByUserIdProductIds" parameterType="map">

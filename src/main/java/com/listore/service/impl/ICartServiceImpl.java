@@ -43,12 +43,13 @@ public class ICartServiceImpl implements ICartService {
 		}
 		//先判断购物车里面有没有该对象存在
 		Cart cart = cartMapper.selectByProductIdUserId(userId,productId);
+		System.out.println("cart is " + cart);
 		if(cart == null){
 			Cart cartItem = new Cart();
-			cart.setProductId(productId);
-			cart.setUserId(userId);
-			cart.setChecked(Const.Cart.CHECKED);
-			cart.setQuantity(count);
+			cartItem.setProductId(productId);
+			cartItem.setUserId(userId);
+			cartItem.setChecked(Const.Cart.CHECKED);
+			cartItem.setQuantity(count);
 			//说明购物车里面没有该商品,可以添加
 			cartMapper.insert(cartItem);
 		}else{
