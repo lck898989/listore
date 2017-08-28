@@ -110,6 +110,7 @@ public class CartController {
 	/*
 	*
 	* 单独选择的接口方法
+	* 首先将全选置为不可用：将数据库中的商品的是否已经勾选置为零
 	*
 	* */
 	@RequestMapping("/selectAlone")
@@ -119,16 +120,23 @@ public class CartController {
 		if (user == null) {
 			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
 		}
+		//在购物车单选反选是必须要productId的否则提示错误信息
+		if(productId == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
+		}
 		return cartService.selectOrUnselect(user.getId(),productId,Const.Cart.CHECKED);
 
 	}
-	//单独反选的接口方法
+	//单独反选的接口方法：首先将全选置为可用
 	@RequestMapping("/unSelectAlone")
 	@ResponseBody
 	public ServerResponse<CartVo> unSelectAlone(HttpSession session,Integer productId){
 		User user = (User) session.getAttribute(Const.CURRENT_USER);
 		if (user == null) {
 			return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+		}
+		if(productId == null){
+			return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
 		}
 		return cartService.selectOrUnselect(user.getId(),productId,Const.Cart.UN_CHECKED);
 

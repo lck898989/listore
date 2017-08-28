@@ -109,9 +109,10 @@ public class ICartServiceImpl implements ICartService {
 		return ServerResponse.createBySuccess(cartVo);
 	}
     //单独选择某些商品或者全反选全选（只要productId为空的时候可以实现全选和全反选）
+	//如果想实现单选或者单反选就要首先进行取消全选
 	@Override
 	public ServerResponse<CartVo> selectOrUnselect(Integer userId,Integer productId,Integer checked) {
-		if(productId == null){
+		if(checked == null || userId == null){
 			return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
 		}
 		int updateCount = cartMapper.selectOrUnSelectByUserIdProductIds(userId,productId,checked);
