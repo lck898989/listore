@@ -1,6 +1,9 @@
 package com.listore.dao;
 
 import com.listore.pojo.OrderItem;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface OrderItemMapper {
     /**
@@ -50,4 +53,6 @@ public interface OrderItemMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(OrderItem record);
+
+    List<OrderItem> selectByUserIdAndOrderNo(@Param("userId") Integer userId,@Param("orderNo")Long orderNo);
 }
