@@ -218,4 +218,9 @@
     </foreach>
 
   </insert>
+  <select id="select" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from listore_order_item
+  </select>
 </mapper>

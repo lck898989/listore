@@ -1,7 +1,10 @@
 package com.listore.service;
 
+import com.github.pagehelper.PageInfo;
 import com.listore.commen.ServerResponse;
+import com.listore.vo.OrderVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,4 +24,9 @@ public interface IOrderService {
     ServerResponse createOrder(Integer id, Integer shippingId);
 
     ServerResponse<String> cancelOrder(Integer id, Long orderNo);
+    ServerResponse getOrderCartProduct(Integer userId);
+
+    ServerResponse<OrderVo> detail(Integer id, Long orderNo);
+
+    ServerResponse<PageInfo> list(Integer id,Integer pageNum,Integer pageSize);
 }
