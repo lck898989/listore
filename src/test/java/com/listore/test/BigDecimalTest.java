@@ -3,6 +3,7 @@ package com.listore.test;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Created by HP on 2017/8/26.
@@ -32,5 +33,11 @@ public class BigDecimalTest {
         BigDecimal b1 = new BigDecimal("0.05");
         BigDecimal b2 = new BigDecimal("0.01");
         System.out.println(b1.add(b2));
+    }
+    @Test
+    public void test4(){
+
+        System.out.println(new BigDecimal(4299).equals(new BigDecimal(4299)));
+        BigInteger
     }
 }

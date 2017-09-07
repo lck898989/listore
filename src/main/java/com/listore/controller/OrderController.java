@@ -35,6 +35,48 @@ public class OrderController {
      private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
      @Resource(name="iOrderService")
      private IOrderService iOrderService;
+     //创建订单
+     @RequestMapping("/create")
+     @ResponseBody
+     public ServerResponse createOrder(HttpSession session,Integer shippingId){
+         User user = (User)session.getAttribute(Const.CURRENT_USER);
+         if(user == null){
+             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+         }
+         return iOrderService.createOrder(user.getId(),shippingId);
+     }
+    //取消订单
+    @RequestMapping("/cancel")
+    @ResponseBody
+    public ServerResponse<String> cancleOrder(HttpSession session,Long orderNo){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.cancelOrder(user.getId(),orderNo);
+    }
+    //获取订单中购物车中的商品
+    @RequestMapping("/get_order_cart_product")
+    @ResponseBody
+    public ServerResponse<String> getOrderCartProduct(HttpSession session,Long orderNo){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.cancelOrder(user.getId(),orderNo);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     //订单支付功能:需要订单号
     @RequestMapping("/pay")
     @ResponseBody
@@ -65,17 +107,24 @@ public class OrderController {
             }
             params.put(name,valueStr);
         }
-        logger.info("支付宝回调，sign{},trade_status:{},参数:{}",params.get("sign"),params.get("trade_status"),params.toString());
+        logger.info("支付宝回调:sign{},trade_status:{},参数:{}",params.get("sign"),params.get("trade_status"),params.toString());
 
         //重要信息：验证回调是不是支付宝发的，及防止重复发送通知
         //通知返回参数列表就是上面的params变量，里面有键值对就是一些参数信息
         //移除参数列表中sign_type参数，因为它不用验签
         params.remove("sign_type");
+
+        logger.info(params.toString());
         try {
-            boolean alipayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getPublicKey(),"utf-8",Configs.getSignType());
+            logger.info("sign type is ",params.get("sign_type"));
+            logger.info("sign is ",params.get("sign"));
+            logger.info("publicKey is ",Configs.getAlipayPublicKey());
+            logger.info("signType is ",Configs.getSignType());
+            boolean alipayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(),"utf-8",Configs.getSignType());
             if(!alipayRSACheckedV2){
                 return ServerResponse.createByErrorMessage("非法请求");
             }
+            logger.info(params.toString());
         } catch (AlipayApiException e) {
             logger.error("验证失败",e);
             e.printStackTrace();
@@ -91,6 +140,7 @@ public class OrderController {
         //验证成功的话那还费什么话快去数据库中更新信息啊
         ServerResponse serverResponse = iOrderService.aliCallback(params);
         if(serverResponse.isSuccess()){
+            logger.info("1");
             return Const.AlipayCallback.RESPONSE_SUCESS;
         }
         return Const.AlipayCallback.RESPONSE_FAILED;
@@ -98,13 +148,16 @@ public class OrderController {
     //查询订单支付状态
     @RequestMapping("/query_order_pay_status")
     @ResponseBody
-    public ServerResponse queryOrderPayStatus(HttpSession session,Long orderNo){
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session,Long orderNo){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iOrderService.queryOrderPayStatus(user.getId(),orderNo);
-
+        ServerResponse serverResponse = iOrderService.queryOrderPayStatus(user.getId(),orderNo);
+        if(serverResponse.isSuccess()){
+            return ServerResponse.createBySuccess(true);
+        }
+        return ServerResponse.createByError();
     }
 
 }

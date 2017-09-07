@@ -16,5 +16,9 @@ public interface IOrderService {
     public ServerResponse pay(Integer userId,Long orderNo,String path);
     public ServerResponse aliCallback(Map<String,String> params);
 
-    ServerResponse queryOrderPayStatus(Integer id, Long orderNo);
+    ServerResponse<Boolean> queryOrderPayStatus(Integer id, Long orderNo);
+
+    ServerResponse createOrder(Integer id, Integer shippingId);
+
+    ServerResponse<String> cancelOrder(Integer id, Long orderNo);
 }
