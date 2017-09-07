@@ -36,7 +36,7 @@ public class OrderManagerController {
         if(!user.getRole().equals(Const.Role.ROLE_ADMIN)){
             return ServerResponse.createByErrorMessage("权限不够");
         }
-        iOrderService.list(null,pageNum,pageSize);
+        return iOrderService.list(null,pageNum,pageSize);
     }
 
 
