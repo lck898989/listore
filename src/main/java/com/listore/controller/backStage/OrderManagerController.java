@@ -98,5 +98,6 @@ public class OrderManagerController {
         if(orderNo == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGALE_ARGUMENT.getCode(),ResponseCode.ILLEGALE_ARGUMENT.getDesc());
         }
+        return iOrderService.manageSendGoods(orderNo);
     }
 }
