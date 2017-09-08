@@ -218,9 +218,10 @@
     </foreach>
 
   </insert>
-  <select id="select" resultMap="BaseResultMap">
+  <select id="selectByOrderNo" resultMap="BaseResultMap" parameterType="long">
     select
     <include refid="Base_Column_List"/>
     from listore_order_item
+    where order_no = #{orderNo}
   </select>
 </mapper>

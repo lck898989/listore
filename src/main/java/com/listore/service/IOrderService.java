@@ -2,6 +2,7 @@ package com.listore.service;
 
 import com.github.pagehelper.PageInfo;
 import com.listore.commen.ServerResponse;
+import com.listore.vo.OrderItemVo;
 import com.listore.vo.OrderVo;
 
 import java.util.List;
@@ -29,4 +30,11 @@ public interface IOrderService {
     ServerResponse<OrderVo> detail(Integer id, Long orderNo);
 
     ServerResponse<PageInfo> list(Integer id,Integer pageNum,Integer pageSize);
+    public ServerResponse<PageInfo> manageList(int pageNum,int pageSize);
+
+    ServerResponse<OrderVo> manageDetail(Long orderNo);
+
+    ServerResponse<PageInfo> manageSearch(Long orderNo,int pageNum,int pageSize);
+
+    public ServerResponse<String> manageSendGoods(long orderNo);
 }

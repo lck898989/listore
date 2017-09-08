@@ -252,4 +252,11 @@
     order by create_time desc
   </select>
 
+  <select id="selectAllOrder" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from listore_order
+    order by create_time desc
+  </select>
+
 </mapper>

@@ -177,6 +177,89 @@ public class IOrderServiceImpl implements IOrderService {
 
         return ServerResponse.createBySuccess(pageInfo);
     }
+
+
+
+
+    //backend
+    /*
+    *
+    * 后台订单list页
+    *
+    * */
+    public ServerResponse<PageInfo> manageList(int pageNum,int pageSize){
+        PageHelper.startPage(pageNum,pageSize);
+        //获得所有订单
+        List<Order> orderList = orderMapper.selectAllOrder();
+        List<OrderVo> orderVoList = assembleOrderVoList(null,orderList);
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderVoList);
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+    /*
+    *
+    * 后台订单详情
+    *
+    * */
+    @Override
+    public ServerResponse<OrderVo> manageDetail(Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(order != null){
+            //查询订单明细列表
+            List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
+            OrderVo orderVo = assembleOrderVo(order,orderItemList);
+            return ServerResponse.createBySuccess(orderVo);
+        }
+       return ServerResponse.createByErrorMessage("您没有该订单");
+
+    }
+
+    /*
+    *
+    * 依据订单号进行搜索订单
+    * 为了以后扩展：模糊查询的功能
+    *
+    *
+    * */
+
+    @Override
+    public ServerResponse<PageInfo> manageSearch(Long orderNo,int pageNum,int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(order != null){
+
+            //查询订单明细列表
+            List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
+            OrderVo orderVo = assembleOrderVo(order,orderItemList);
+            PageInfo pageInfo = new PageInfo(Lists.newArrayList(order));
+            pageInfo.setList(Lists.newArrayList(orderVo));
+            return ServerResponse.createBySuccess(pageInfo);
+        }
+        return ServerResponse.createByErrorMessage("您没有该订单");
+
+    }
+    //发货
+    public ServerResponse<String> manageSendGoods(long orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(order == null){
+            return ServerResponse.createByErrorMessage("订单不存在");
+        }
+        //将订单状态改为已发货
+        if(order.getStatus() == Const.OrderStatusEnum.PAID.getCode()){
+            //如果该订单已经支付成功那么是可以允许发货的
+            order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
+            order.setSendTime(new Date());
+            int updateRow = orderMapper.updateByPrimaryKeySelective(order);
+            if(updateRow > 0){
+                return ServerResponse.createByErrorMessage("发货成功");
+
+            }
+            return ServerResponse.createByErrorMessage("发货失败");
+        }
+        return ServerResponse.createByErrorMessage("订单未付款");
+
+    }
+
     private List<OrderVo> assembleOrderVoList(Integer userId,List<Order> orderList){
         List<OrderVo> orderVoList = Lists.newArrayList();
         //遍历订单列表
@@ -184,8 +267,8 @@ public class IOrderServiceImpl implements IOrderService {
             List<OrderItem> orderItemList = Lists.newArrayList();
             OrderVo  orderVo = new OrderVo();
             if(userId == null){
-                //管理员不需要userId
-                orderItemList = orderItemMapper.select();
+                //管理员不需要userId 依据订单号获得订单明细
+                orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
             }else{
                 orderItemList = orderItemMapper.selectByUserIdAndOrderNo(userId,order.getOrderNo());
             }
