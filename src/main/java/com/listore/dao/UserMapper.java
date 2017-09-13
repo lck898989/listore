@@ -68,11 +68,11 @@ public interface UserMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(User record);
-    //¼ì²éÓÃ»§ÃûÊÇ·ñ´æÔÚ
+    //æ£€æŸ¥ç”¨æˆ·å
 	int checkUsername(String username);
-	//µÇÂ¼Ê±Ğ£Ñé
+	//è¿”å›ä¸€ä¸ªç™»é™†ç”¨æˆ·çš„å¯¹è±¡
 	User selectLogin(@Param("username")String username,@Param("password")String password);
-    //¼ì²éÓÊÏä
+    //æ£€æŸ¥é‚®ç®±
 	int checkEmail(String email);
 
 	String selectQuestionByUser(String username);

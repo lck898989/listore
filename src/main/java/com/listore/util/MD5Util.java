@@ -2,7 +2,7 @@ package com.listore.util;
 
 import java.security.MessageDigest;
 /*
- * ¶ÔÓÃ»§ÃÜÂë½øĞĞMD5¼ÓÃÜ´¦Àí
+ * MD5åŠ å¯†çš„æ–¹æ³•
  * */
 public class MD5Util {
 	  private static String byteArrayToHexString(byte b[]) {
@@ -23,8 +23,7 @@ public class MD5Util {
 	    }
 
 	    /**
-	     * ·µ»Ø´óĞ´MD5
-	     *
+	     * MD5åŠ å¯†
 	     * @param origin
 	     * @param charsetname
 	     * @return
