@@ -68,12 +68,12 @@ public interface UserMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(User record);
-    //检查用户名是否存在
+    //妫�鏌ョ敤鎴峰悕
 	int checkUsername(String username);
-	//登录时校验
+    //鏍规嵁鍓嶇鐨勭敤鎴蜂俊鎭粠鏁版嵁搴撲腑鎻愬彇鐢ㄦ埛瀵硅薄
 	User selectLogin(@Param("username")String username,@Param("password")String password);
-    //检查邮箱
-	int checkEmail(String email);
+	//妫�鏌ョ敤鎴风殑閭淇℃伅
+    int checkEmail(String email);
 
 	String selectQuestionByUser(String username);
 

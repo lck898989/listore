@@ -2,8 +2,8 @@ package com.listore.util;
 
 import java.security.MessageDigest;
 /*
- * 对用户密码进行MD5加密处理
- * */
+* MD5鍔犲瘑绫诲伐鍏凤紝閲岄潰鐨勬柟娉曟槸闈欐�佺殑鏂逛究璋冪敤
+* */
 public class MD5Util {
 	  private static String byteArrayToHexString(byte b[]) {
 	        StringBuffer resultSb = new StringBuffer();
@@ -23,8 +23,6 @@ public class MD5Util {
 	    }
 
 	    /**
-	     * 返回大写MD5
-	     *
 	     * @param origin
 	     * @param charsetname
 	     * @return

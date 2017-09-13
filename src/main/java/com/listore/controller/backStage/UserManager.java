@@ -17,9 +17,8 @@ import com.listore.pojo.User;
 import com.listore.service.IUserService;
 
 /*
- * 
- * ºóÌ¨¹ÜÀí
- * */
+*åå°ç”¨æˆ·ç®¡ç†
+* */
 @Controller
 @RequestMapping("/manager/user")
 public class UserManager {
@@ -30,15 +29,15 @@ public class UserManager {
 	public ServerResponse<User> login(@Param("username")String username,@Param("password")String password,HttpSession session){
 	   ServerResponse<User> response = iUserService.login(username, password);
 	   if(response.isSuccess()){
-		   //»ñµÃµ±Ç°µÇÂ¼µÄÓÃ»§
+		   //æ ¹æ®å‰ç«¯ä¼ é€’è¿›æ¥çš„ä¿¡æ¯ï¼Œä»æ•°æ®åº“ä¸­æŸ¥æ‰¾è¯¥ç”¨æˆ·å¯¹è±¡
 		   User user = response.getData();
 		   if(user.getRole() == Const.Role.ROLE_ADMIN){
-			   //ËµÃ÷µÇÂ¼µÄÊÇ¹ÜÀíÔ±½«ÓÃ»§×°½øsessionÖĞÈ¥
+			   //å°†è¯¥ç”¨æˆ·çš„ç™»å½•ä¿¡æ¯å­˜åˆ°sessioné‡Œ
 			   session.setAttribute(Const.CURRENT_USER,user);
 			   return response;
 			  
 		   }else{
-		    return ServerResponse.createByErrorMessage("²»ÊÇ¹ÜÀíÔ±Éí·İ");
+			   return ServerResponse.createByErrorMessage("æ— æƒé™æ“ä½œ");
 		   }
 		}
 	   return response;
