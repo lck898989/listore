@@ -58,6 +58,7 @@ public class FtpUtil {
 				// TODO Auto-generated catch block
                 uploaded = false;				
 				logger.error("上传错误",e);
+				return uploaded;
 			}finally{
 				fis.close();
 				ftpClient.disconnect();

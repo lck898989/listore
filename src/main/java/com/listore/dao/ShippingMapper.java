@@ -1,6 +1,9 @@
 package com.listore.dao;
 
 import com.listore.pojo.Shipping;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ShippingMapper {
     /**
@@ -50,4 +53,12 @@ public interface ShippingMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Shipping record);
+
+    int deleteByUserIdShippingId(@Param("userId")Integer userId,@Param("shippingId")Integer shippingId);
+
+    int updateByShipping(Shipping shipping);
+
+    Shipping selectByUserIdShippingId(@Param("userId")Integer userId,@Param("shippingId") Integer shippingId);
+
+    List<Shipping> selectByUserId(Integer userId);
 }

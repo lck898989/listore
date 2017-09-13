@@ -1,6 +1,10 @@
 package com.listore.dao;
 
+import com.listore.pojo.Cart;
 import com.listore.pojo.Order;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface OrderMapper {
     /**
@@ -50,4 +54,11 @@ public interface OrderMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Order record);
+
+    Order selectByUserIdAndOrderNo(@Param("userId")Integer userId,@Param("orderNo")Long orderNo);
+
+    Order selectByOrderNo(Long orderNo);
+    List<Order> selectByUserId(Integer userId);
+    List<Order> selectAllOrder();
+
 }
