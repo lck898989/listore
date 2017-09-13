@@ -59,7 +59,7 @@ public class OrderController {
         }
         return iOrderService.cancelOrder(user.getId(),orderNo);
     }
-    //获取订单中购物车中的商品
+    //获取订单中的商品信息
     @RequestMapping("/get_order_cart_product")
     @ResponseBody
     public ServerResponse<String> getOrderCartProduct(HttpSession session){

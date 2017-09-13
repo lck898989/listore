@@ -82,7 +82,7 @@ public class IOrderServiceImpl implements IOrderService {
         BigDecimal totalPrice = this.getTotalPrice(orderItemList);
 
 
-        //生成订单
+        //生成订单，插入数据库
         Order order = this.assembleOrder(userId,shippingId,totalPrice);
         if(order == null){
             return ServerResponse.createByErrorMessage("生成订单错误");
@@ -91,7 +91,7 @@ public class IOrderServiceImpl implements IOrderService {
         if(CollectionUtils.isEmpty(orderItemList)){
             return ServerResponse.createByErrorMessage("购物车为空");
         }
-        //在orderItem进行批量插入
+        //在orderItem进行批量插入将该订单的所有订单明细的订单号置为当前的订单号
         for(OrderItem orderItem:orderItemList){
             orderItem.setOrderNo(order.getOrderNo());
         }
@@ -111,7 +111,7 @@ public class IOrderServiceImpl implements IOrderService {
     @Override
     public ServerResponse<String> cancelOrder(Integer userId, Long orderNo) {
          Order order = orderMapper.selectByUserIdAndOrderNo(userId,orderNo);
-         if(order != null){
+         if(order == null){
              return ServerResponse.createByErrorMessage("您没有该订单");
          }
         if(order.getStatus() != Const.OrderStatusEnum.NO_PAY.getCode()){
@@ -120,6 +120,7 @@ public class IOrderServiceImpl implements IOrderService {
         Order updateOrder = new Order();
         updateOrder.setId(order.getId());
         updateOrder.setStatus(Const.OrderStatusEnum.CANCELED.getCode());
+        updateOrder.setUpdateTime(new Date());
         int rowCount = orderMapper.updateByPrimaryKeySelective(updateOrder);
          if(rowCount > 0){
              return ServerResponse.createBySuccess("取消成功");
@@ -256,7 +257,18 @@ public class IOrderServiceImpl implements IOrderService {
             }
             return ServerResponse.createByErrorMessage("发货失败");
         }
-        return ServerResponse.createByErrorMessage("订单未付款");
+        else if(order.getStatus() == Const.OrderStatusEnum.NO_PAY.getCode()){
+            return ServerResponse.createByErrorMessage("订单未付款");
+        }else if(order.getStatus() == Const.OrderStatusEnum.ORDER_SUCCESS.getCode() ||
+                order.getStatus() == Const.OrderStatusEnum.SHIPPED.getCode()){
+            return ServerResponse.createByErrorMessage("订单已发货或者完成，请不要重复发货");
+        }else if(order.getStatus() == Const.OrderStatusEnum.CANCELED.getCode()){
+            return ServerResponse.createByErrorMessage("订单已经取消，不能发货");
+        }else{
+            return ServerResponse.createByErrorMessage("订单已经关闭，不能发货");
+        }
+
+
 
     }
 

@@ -38,6 +38,5 @@ public class BigDecimalTest {
     public void test4(){
 
         System.out.println(new BigDecimal(4299).equals(new BigDecimal(4299)));
-        BigInteger
     }
 }
