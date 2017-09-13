@@ -2,8 +2,8 @@ package com.listore.util;
 
 import java.security.MessageDigest;
 /*
- * MD5加密的方法
- * */
+* MD5加密类工具，里面的方法是静态的方便调用
+* */
 public class MD5Util {
 	  private static String byteArrayToHexString(byte b[]) {
 	        StringBuffer resultSb = new StringBuffer();
@@ -23,7 +23,6 @@ public class MD5Util {
 	    }
 
 	    /**
-	     * MD5加密
 	     * @param origin
 	     * @param charsetname
 	     * @return

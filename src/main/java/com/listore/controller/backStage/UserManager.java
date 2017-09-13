@@ -17,9 +17,8 @@ import com.listore.pojo.User;
 import com.listore.service.IUserService;
 
 /*
- * 
- * 后台用户管理
- * */
+*后台用户管理
+* */
 @Controller
 @RequestMapping("/manager/user")
 public class UserManager {
@@ -30,15 +29,15 @@ public class UserManager {
 	public ServerResponse<User> login(@Param("username")String username,@Param("password")String password,HttpSession session){
 	   ServerResponse<User> response = iUserService.login(username, password);
 	   if(response.isSuccess()){
-		   //获得用户对象
+		   //根据前端传递进来的信息，从数据库中查找该用户对象
 		   User user = response.getData();
 		   if(user.getRole() == Const.Role.ROLE_ADMIN){
-			   //将当前登录的用户放到session中去
+			   //将该用户的登录信息存到session里
 			   session.setAttribute(Const.CURRENT_USER,user);
 			   return response;
 			  
 		   }else{
-		    return ServerResponse.createByErrorMessage("无权限操作");
+			   return ServerResponse.createByErrorMessage("无权限操作");
 		   }
 		}
 	   return response;

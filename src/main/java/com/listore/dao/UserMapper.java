@@ -68,12 +68,12 @@ public interface UserMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(User record);
-    //检查用户名g
+    //检查用户名
 	int checkUsername(String username);
-	//返回一个登陆用户的对象
+    //根据前端的用户信息从数据库中提取用户对象
 	User selectLogin(@Param("username")String username,@Param("password")String password);
-    //检查邮箱
-	int checkEmail(String email);
+	//检查用户的邮箱信息
+    int checkEmail(String email);
 
 	String selectQuestionByUser(String username);
 
