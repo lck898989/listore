@@ -34,7 +34,7 @@ import com.listore.vo.ProductDetailVo;
  * 
  * */
 @Controller
-@RequestMapping("/manager/product")
+@RequestMapping("/manage/product")
 public class ManageProductController {
 	 @Resource(name="productServer")
 	 private IProductService productServer;
