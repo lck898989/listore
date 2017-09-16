@@ -25,7 +25,7 @@ import com.listore.service.IUserService;
  * 
  * */
 @Controller
-@RequestMapping("/manager/category")
+@RequestMapping("/manage/category")
 public class CategoryController {
 	   @Resource(name="iUserService")
 	   private IUserService iUserService;
