@@ -20,7 +20,7 @@ import com.listore.service.IUserService;
 *后台用户管理
 * */
 @Controller
-@RequestMapping("/manager/user")
+@RequestMapping("/manage/user")
 public class UserManager {
 	@Resource(name="iUserService")
 	private IUserService iUserService;
