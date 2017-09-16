@@ -38,7 +38,7 @@ public class FtpUtil {
 		boolean uploaded = true;
 		FileInputStream fis = null;
 		//连接到ftp服务器
-		if(connectFtpServer(this.ip,this.port,this.user,this.pwd)){
+		if(connectFtpServer(this.ip,this.port,this.user,this.pwd)) {
 			try {
 				//切换工作路径
 				ftpClient.changeWorkingDirectory(remotePath);
@@ -50,22 +50,21 @@ public class FtpUtil {
 				ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 				//设置为被动传输模式
 				ftpClient.enterLocalPassiveMode();
-				for(File fileItem:fileList){
+				for (File fileItem : fileList) {
 					fis = new FileInputStream(fileItem);
-					ftpClient.storeFile(fileItem.getName(),fis);
+					ftpClient.storeFile(fileItem.getName(), fis);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-                uploaded = false;				
-				logger.error("上传错误",e);
-				return uploaded;
-			}finally{
+				uploaded = false;
+				logger.error("上传错误", e);
+			} finally {
 				fis.close();
 				ftpClient.disconnect();
 			}
-			return uploaded;
 		}
-		return false;
+			return uploaded;
+
 	}
 	//连接到ftp服务器
 	private boolean connectFtpServer(String ip,int port,String user,String pass){
