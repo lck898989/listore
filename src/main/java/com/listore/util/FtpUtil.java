@@ -35,7 +35,7 @@ public class FtpUtil {
 		return result;
 	}
 	private boolean uploadFile(String remotePath,List<File> fileList) throws IOException{
-		boolean uploaded = true;
+		boolean uploaded = false;
 		FileInputStream fis = null;
 		//连接到ftp服务器
 		if(connectFtpServer(this.ip,this.port,this.user,this.pwd)) {
@@ -54,9 +54,9 @@ public class FtpUtil {
 					fis = new FileInputStream(fileItem);
 					ftpClient.storeFile(fileItem.getName(), fis);
 				}
+				uploaded = true;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				uploaded = false;
 				logger.error("上传错误", e);
 			} finally {
 				fis.close();
