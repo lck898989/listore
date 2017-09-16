@@ -31,6 +31,7 @@ import com.listore.vo.ProductDetailVo;
 
 /*
  * 后台管理商品控制器
+ * 前端不能访问的原因查找：
  * 
  * */
 @Controller
