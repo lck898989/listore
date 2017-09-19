@@ -58,13 +58,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			    
     </form>
     springMvc文件上传
-    <form action="/manager/product/uploadFile" method="post" enctype="multipart/form-data">
+    <form action="/manage/product/uploadFile" method="post" enctype="multipart/form-data">
            <input type="file" name="upload_fileName"/>
            <input type="submit" value="上传文件">
     
     </form>
     springMvc富文本文件上传
-    <form action="/manager/product/richText_img_Upload" method="post" enctype="multipart/form-data">
+    <form action="/manage/product/richText_img_Upload" method="post" enctype="multipart/form-data">
            <input type="file" name="upload_fileName"/>
            <input type="submit" value="富文本上传">
     
