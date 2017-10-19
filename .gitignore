@@ -1,3 +1,4 @@
+#Class文件就不必提交上去了，原因是已经提交了.java格式的文件
 *.class
 #package  file
 *.war

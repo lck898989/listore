@@ -11,7 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * 
  * */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-//��֤���л�json��ʱ�������null�Ķ���keyҲ����ʧ
+//保证序列化json的时候，如果是null的时候，key也会消失
 public class ServerResponse<T> implements Serializable{
 	private int status;
 	private String msg;
@@ -33,7 +33,7 @@ public class ServerResponse<T> implements Serializable{
 		this.data = data;
 	}
 	@JsonIgnore
-	//使之不在json序列化结果中
+	//使之不在json序列化结果中，否则的话它会返回给前端
 	public boolean isSuccess(){
 		//���status = 0�Ļ�˵����¼�ɹ�
 		return this.status == ResponseCode.SUCCESS.getCode();

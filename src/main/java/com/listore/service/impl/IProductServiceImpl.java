@@ -1,6 +1,5 @@
 package com.listore.service.impl;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -18,10 +17,7 @@ import com.listore.util.TimeUtil;
 import com.listore.vo.ProductDetailVo;
 import com.listore.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
 import org.springframework.stereotype.Service;
-import sun.swing.StringUIClientPropertyKey;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

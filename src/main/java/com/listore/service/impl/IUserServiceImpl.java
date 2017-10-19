@@ -1,11 +1,5 @@
 package com.listore.service.impl;
 
-import java.util.UUID;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.listore.commen.Const;
 import com.listore.commen.ServerResponse;
@@ -14,13 +8,18 @@ import com.listore.dao.UserMapper;
 import com.listore.pojo.User;
 import com.listore.service.IUserService;
 import com.listore.util.MD5Util;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.UUID;
 
 @Service("iUserService")
 public class IUserServiceImpl implements IUserService{
-	//ͨ��ɨ�������ʽ���д���
-	@Autowired
+	//通过autowired注入
+	@Resource
 	private UserMapper userMapper;
-	//����һ��������Ӧ����
+	//用户登录接口
 	public ServerResponse<User> login(String username, String password){
 		//检查用户名是否存在
 		System.out.println("userMapper is " + userMapper);
@@ -67,11 +66,10 @@ public class IUserServiceImpl implements IUserService{
 		}
 		return ServerResponse.createBySuccessMsg("注册成功");
 	}
-	//����У��ķ���
+	//检查字段的合法性
 	public ServerResponse<String> checkValid(String str, String type) {
-		//���type��λ�յĻ���type����email���û�������������֤
+		//检查输入字段的合法性
 		if(StringUtils.isNotBlank(type)){
-			//��ʼУ��
 			//检查用户名
 			if(Const.USERNAME.equals(type)){
 				 int resultCount = userMapper.checkUsername(str);
@@ -92,19 +90,19 @@ public class IUserServiceImpl implements IUserService{
 		}
 		return ServerResponse.createBySuccessMsg("验证成功");
 	}
-	//��������ʱ ��ȡ������ʾ����
+	//在没有登录状态下获取密码提示问题
 	public ServerResponse<String> forgetGetQuestion(String username) {
-		//У���û����Ƿ����
+		//检查用户名的合法性
 		ServerResponse response = this.checkValid(username,Const.USERNAME);
 		if(response.isSuccess()){
 			//如果返回成功的话说明之前没有注册，不具有密码找回的条件
 			return ServerResponse.createByErrorMessage("user has not register");
 		}
-		//����˵���û��Ǵ��ڵ�Ȼ��ͨ���û����ҵ������һ���ʾ����
+		//获得密码提示问题
 		String question = userMapper.selectQuestionByUser(username);
-		//��������Ƿ�Ϊ��
+		//检查密码提示问题是否为空
 		if(StringUtils.isNotBlank(question)){
-			//˵�����ⲻ�ǿյ�
+			//返回密码提示问题
 			return ServerResponse.createBySuccessMsg(question);
 		}else{
 			return ServerResponse.createByErrorMessage("问题为空");
@@ -127,15 +125,15 @@ public class IUserServiceImpl implements IUserService{
 		//输出错误信息
 		return ServerResponse.createByErrorMessage("问题的答案错误");
 	}
-	//��������
+	//在没有登录状态下重设密码
 	public ServerResponse<String> ResetPassword(String username, String passwordNew, String forgetToken) {
 		
 		// TODO Auto-generated method stub
-		//У��
+		//检查token是否为空
 		if(StringUtils.isBlank(forgetToken)){
-			return ServerResponse.createByErrorMessage("token Ϊ��");
+			return ServerResponse.createByErrorMessage("token 为空");
 		}
-		//У���û����Ƿ����
+		//检查用户名的合法性
 		ServerResponse validResponse = this.checkValid(username,Const.USERNAME);
 		if(validResponse.isSuccess()){
 			return ServerResponse.createByErrorMessage("用户名错误");
@@ -146,9 +144,9 @@ public class IUserServiceImpl implements IUserService{
 					
 		}
 		if(StringUtils.equals(forgetToken,token)){
-			//����������м���
+			//新密码进行加密
 			String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
-			//��������и���
+			//更新用户密码
 			int rowCount = userMapper.updatePasswordByUsername(username,md5Password);
 			if(rowCount > 0){
 			return ServerResponse.createBySuccessMsg("修改密码成功");
@@ -160,9 +158,9 @@ public class IUserServiceImpl implements IUserService{
 			return ServerResponse.createByErrorMessage("token不一致");
 		}
 	}
-	//��¼״̬����������
+	//在登录状态下进行重设密码
 	public ServerResponse<String> resetPassword(String passwordOld,String passwordNew,User user){
-		//��ֹ����ԽȨ��ҪУ��һ������û��ľ����룬һ��Ҫָ��������û�����Ϊ���ǻ��ѯһ��count��1�������ָ��id��ô�ͻ᷵��TRUE��
+		//检查密码是否为原来的密码
 		int resultCount = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld),user.getId());
 		if(resultCount == 0){
 			return ServerResponse.createByErrorMessage("旧密码错误");
@@ -170,20 +168,17 @@ public class IUserServiceImpl implements IUserService{
 		user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
 		int updataCount = userMapper.updateByPrimaryKeySelective(user);
 		if(updataCount > 0){
-			//�����������³ɹ�
+			//重置密码成功
 			return ServerResponse.createBySuccessMsg("重置密码成功");
 		}
 		return ServerResponse.createByErrorMessage("重置密码失败");
 	}
-	//�����û���Ϣ
+	//更新用户信息成功
 	public ServerResponse<User> update_userInfo(User newUser) {
 		// TODO Auto-generated method stub
-		//username�ǲ��ܱ����µ�
-		//emailҲҪ����һ��У�飬У���µ�email�ǲ����Ѿ����ڣ����Ҵ��ڵ�email�����ͬ�Ļ������������ǵ�������û���
 		int resultCount = userMapper.checkEmailByUserId(newUser.getEmail(),newUser.getId());
-		//���resultCount > 0�Ļ�˵���������Ѿ�������ע�����
 		if(resultCount > 0){
-			return ServerResponse.createByErrorMessage("�������Ѿ���ռ��");
+			return ServerResponse.createByErrorMessage("该邮箱已经被注册");
 		}
 		User updateUser = new User();
 		updateUser.setId(newUser.getId());
@@ -193,9 +188,9 @@ public class IUserServiceImpl implements IUserService{
 		updateUser.setAnswer(newUser.getAnswer());
 		int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
 		if(updateCount > 0){
-			return ServerResponse.createBySuccess("���¸�����Ϣ�ɹ�",updateUser);
+			return ServerResponse.createBySuccess("更新用户信息成功",updateUser);
 		}
-		return ServerResponse.createByErrorMessage("���¸�����Ϣʧ��");
+		return ServerResponse.createByErrorMessage("更新用户信息失败");
 	}
 	//��ȡ�����û���Ϣ
 	public ServerResponse<User> getUserInfo(int id) {
