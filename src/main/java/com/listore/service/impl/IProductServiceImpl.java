@@ -121,7 +121,7 @@ public class IProductServiceImpl implements IProductService {
 			
 			
 			//设置imageHost:通过读取配置文件的内容进行对图片的地址进行配置防止硬编码  创建一个propertiesUtil处理配置文件
-			productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://www.li.com/"));
+			productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://images.listore.top/"));
 			//设置createTime由于从数据库拿来的数据经过Product类的时候变成了毫秒数所以需要加工成时间类型
 			productDetailVo.setCreateTime(TimeUtil.dateToStr(product.getCreateTime()));
 			//设置updateTime
