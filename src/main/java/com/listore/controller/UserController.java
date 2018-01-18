@@ -1,4 +1,4 @@
-package com.listore.controller;
+pckage com.listore.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
