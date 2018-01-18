@@ -1,8 +1,6 @@
 package com.listore.controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -15,14 +13,11 @@ import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
 import com.listore.pojo.User;
 import com.listore.service.IUserService;
-
-import java.util.HashMap;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController{
 	@Resource(name="iUserService")
 	private IUserService iUserService;
 	
