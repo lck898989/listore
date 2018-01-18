@@ -1,8 +1,6 @@
 package com.listore.controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -15,12 +13,11 @@ import com.listore.commen.ResponseCode;
 import com.listore.commen.ServerResponse;
 import com.listore.pojo.User;
 import com.listore.service.IUserService;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController{
 	@Resource(name="iUserService")
 	private IUserService iUserService;
 	
@@ -30,7 +27,7 @@ public class UserController {
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody       //返回值会自动转换为json对象
 	public ServerResponse<User> login(String username,String password,HttpSession session){
-		//service�����dao��
+		//service
 		System.out.println("username is " + username);
 		
 		checkArgument(true);
@@ -39,7 +36,7 @@ public class UserController {
 		
 		ServerResponse<User> serverResponse = iUserService.login(username, password);
 		System.out.println(serverResponse.isSuccess());
-		//�����¼�ɹ��Ļ�
+		//如果返回结果的信息为真的话说明登录成功
 		if(serverResponse.isSuccess()){
 			 session.setAttribute(Const.CURRENT_USER,serverResponse.getData());
 			 System.out.println("login is success");
@@ -101,7 +98,7 @@ public class UserController {
 	public ServerResponse<String> forgetResetPassword(String username,String passwordNew,String forgetToken){
 		return iUserService.ResetPassword(username,passwordNew,forgetToken);
 	}
-	//��¼״̬�½�����������
+	//登录状态重新设置密码
 	@RequestMapping(value="/reset_password",method=RequestMethod.POST)
 	@ResponseBody
 	public ServerResponse<String> resetPassword(HttpSession session,String passwordOld,String passwordNew){
@@ -117,9 +114,9 @@ public class UserController {
 	public ServerResponse<User> update_userInfo(HttpSession session,User newUser){
 		User oldUser = (User)session.getAttribute(Const.CURRENT_USER);
 		if(oldUser == null){
-			return ServerResponse.createByErrorMessage("�û�û�е�¼");
+			return ServerResponse.createByErrorMessage("用户信息为空");
 		}
-		//�û���Ϣ��ID���������ܱ仯
+		//设置新创建用户的id和用户名信息
 	     newUser.setId(oldUser.getId());
 	     newUser.setUsername(oldUser.getUsername());
 	     ServerResponse<User> response = iUserService.update_userInfo(newUser);

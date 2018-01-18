@@ -8,9 +8,9 @@ import com.listore.commen.ServerResponse;
 import com.listore.pojo.User;
 
 public interface IUserService {
-	 	//�û���¼
+	 	//用户登录
         public ServerResponse login(String username,String password);
-        //�û�ע��
+        //用户注册
         public ServerResponse<String> reigster(User user);
 		public ServerResponse<String> checkValid(String str, String type);
 		public ServerResponse<String> forgetGetQuestion(String username);

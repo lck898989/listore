@@ -1,6 +1,5 @@
 package com.listore.service.impl;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -18,10 +17,7 @@ import com.listore.util.TimeUtil;
 import com.listore.vo.ProductDetailVo;
 import com.listore.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
 import org.springframework.stereotype.Service;
-import sun.swing.StringUIClientPropertyKey;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -125,7 +121,7 @@ public class IProductServiceImpl implements IProductService {
 			
 			
 			//设置imageHost:通过读取配置文件的内容进行对图片的地址进行配置防止硬编码  创建一个propertiesUtil处理配置文件
-			productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://www.li.com/"));
+			productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://images.listore.top/"));
 			//设置createTime由于从数据库拿来的数据经过Product类的时候变成了毫秒数所以需要加工成时间类型
 			productDetailVo.setCreateTime(TimeUtil.dateToStr(product.getCreateTime()));
 			//设置updateTime

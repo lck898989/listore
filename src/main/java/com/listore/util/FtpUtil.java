@@ -30,15 +30,15 @@ public class FtpUtil {
 	public static boolean uploadFile(List<File> fileList) throws IOException{
 		FtpUtil ftpUtil = new FtpUtil(ftpId,21,ftpUser,ftpPass);
 		logger.info("开始连接ftp服务器");
-		boolean result = ftpUtil.uploadFile("imag",fileList);
+		boolean result = ftpUtil.uploadFile("images",fileList);
 		logger.info("上传文件完成：结果：{}",result);
 		return result;
 	}
 	private boolean uploadFile(String remotePath,List<File> fileList) throws IOException{
-		boolean uploaded = true;
+		boolean uploaded = false;
 		FileInputStream fis = null;
 		//连接到ftp服务器
-		if(connectFtpServer(this.ip,this.port,this.user,this.pwd)){
+		if(connectFtpServer(this.ip,this.port,this.user,this.pwd)) {
 			try {
 				//切换工作路径
 				ftpClient.changeWorkingDirectory(remotePath);
@@ -50,22 +50,21 @@ public class FtpUtil {
 				ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 				//设置为被动传输模式
 				ftpClient.enterLocalPassiveMode();
-				for(File fileItem:fileList){
+				for (File fileItem : fileList) {
 					fis = new FileInputStream(fileItem);
 					ftpClient.storeFile(fileItem.getName(),fis);
 				}
+				uploaded = true;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-                uploaded = false;				
-				logger.error("上传错误",e);
-				return uploaded;
-			}finally{
+				logger.error("上传错误", e);
+			} finally {
 				fis.close();
 				ftpClient.disconnect();
 			}
-			return uploaded;
 		}
-		return false;
+			return uploaded;
+
 	}
 	//连接到ftp服务器
 	private boolean connectFtpServer(String ip,int port,String user,String pass){
